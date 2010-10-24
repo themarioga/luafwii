@@ -35,7 +35,7 @@ static int lua_screenPrintf(lua_State *l) {
 }
 static int lua_screenColor(lua_State *l) {
 	int arg = lua_gettop(l);
-	if (arg != 3 || arg != 4) return luaL_error(l, "wrong number of arguments");
+	if (arg != 3 && arg != 4) return luaL_error(l, "wrong number of arguments");
 	int red = luaL_checkint(l, 1);
 	int g = luaL_checkint(l, 2);
 	int b = luaL_checkint(l, 3);

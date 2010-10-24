@@ -53,17 +53,12 @@ void fontPrintf(int x, int y, const char *format, ...) {
 int wavPlayer(const char* file) {	
 	pFmt.start=-1;
 	pFmt.end=-1;
-   void *buf = LoadPCMWav(file, &pFmt);
-   s32 voice = ASND_GetFirstUnusedVoice();
-   if (buf) {
-      if (ASND_SetVoice(voice, VOICE_STEREO_16BIT, pFmt.sample_rate,0, buf, pFmt.sample_channel * pFmt.sample_count * pFmt.sample_byte, 255, 255, NULL) == SND_OK) {
-		ASND_PauseVoice(voice, 0);
-	  } else {
-		return 0;
-	  }
-   } else {
+    void *buf = LoadPCMWav(file, &pFmt);
+	if (buf) {
+    ASND_SetVoice(ASND_GetFirstUnusedVoice(), VOICE_STEREO_16BIT, pFmt.sample_rate,0, buf, pFmt.sample_channel * pFmt.sample_count * pFmt.sample_byte, 255, 255, NULL);
+    } else {
       return 0;
-   }
-   return 1;
+    }
+    return 1;
 }
 

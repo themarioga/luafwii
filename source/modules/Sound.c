@@ -24,13 +24,6 @@ void mp3Loop() {
 	}
 }
 
-static int InitWithASND(lua_State *l) {
-	ASND_Init();
-}
-static int InitWithAESND(lua_State *l) {
-	AESND_Init();
-}
-
 static int lua_soundWavPlay(lua_State *l) {
 if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *file = luaL_checkstring(l, 1);
