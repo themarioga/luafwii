@@ -17,6 +17,7 @@
 #include <mp3player.h>
 #include <oggplayer.h>
 #include <wavplayer.h>
+#include <gcmodplay.h>
 #include <asndlib.h>
 #include <fat.h>
 #include <wiiuse/wpad.h> 
@@ -27,37 +28,20 @@
 #include <SDL/sdl_draw.h>
 #include <SDL/sdl_ttf.h>
 
-SDL_Surface *screens;
-lua_State *l;
-
 #define UserdataStubs(HANDLE, DATATYPE) \
-DATATYPE *to##HANDLE (lua_State *L, int index) \
-{ \
+DATATYPE *to##HANDLE (lua_State *L, int index) { \
   DATATYPE* handle  = (DATATYPE*)lua_touserdata(L, index); \
-  if (handle == NULL) luaL_typerror(L, index, #HANDLE); \
   return handle; \
 } \
 DATATYPE* push##HANDLE(lua_State *L) { \
 	DATATYPE * newvalue = (DATATYPE*)lua_newuserdata(L, sizeof(DATATYPE)); \
-	luaL_getmetatable(L, #HANDLE); \
-	lua_pushvalue(L, -1); \
-	lua_setmetatable(L, -3); \
-	lua_pushstring(L, "__index"); \
-	lua_pushstring(L, #HANDLE); \
-	lua_gettable(L, LUA_GLOBALSINDEX); \
-	lua_settable(L, -3); \
-	lua_pop(L, 1); \
 	return newvalue; \
-}
-
-#define UserdataRegister(HANDLE, METHODS, METAMETHODS) \
+}\
 int HANDLE##_register(lua_State *L) { \
 	luaL_newmetatable(L, #HANDLE); \
 	lua_pushliteral(L, "__index"); \
 	lua_pushvalue(L, -2); \
 	lua_rawset(L, -3); \
-	luaL_openlib(L, 0, METAMETHODS, 0); \
-	luaL_openlib(L, #HANDLE, METHODS, 0); \
 	lua_pushstring(L, #HANDLE); \
 	lua_gettable(L, LUA_GLOBALSINDEX); \
 	luaL_getmetatable(L, #HANDLE); \
@@ -65,10 +49,16 @@ int HANDLE##_register(lua_State *L) { \
 	return 1; \
 }
 
+SDL_Surface *screens;
+lua_State *l;
+MODPlay play;
+TTF_Font *errorfont;
+SDL_Surface *error_text_surface;
+SDL_Color errorcolor;
+
 void InitSDL();
 void free_surf(SDL_Surface* surf);
 void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip);
 void udelay(int us);
 void fontPrintf(int x, int y, const char *format, ...);
 int wavPlayer(const char* file);
-void keyPress_cb( char sym);

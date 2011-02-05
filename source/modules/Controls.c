@@ -18,82 +18,20 @@ int posx, posy, centerx, centery, minx, miny, maxx, maxy;
 int accelx, accely, accelz;
 int gforcex, gforcey;
 int orientroll, orientpitch, orientyaw;
+
 keyboard_event ke;
 
-typedef struct _translation {
-const char *ch;
-int kb;
-} translation;
-
-translation KS[] = {
-	{"q", KS_q},
-	{"w", KS_w},
-	{"e", KS_e},
-	{"r", KS_r},
-	{"t", KS_t},
-	{"y", KS_y},
-	{"u", KS_u},
-	{"i", KS_i},
-	{"o", KS_o},
-	{"p", KS_p},
-	{"[", KS_bracketleft},
-	{"]", KS_bracketright},
-	{"a", KS_a},
-	{"s", KS_s},
-	{"d", KS_d},
-	{"f", KS_f},
-	{"g", KS_g},
-	{"h", KS_h},
-	{"j", KS_j},
-	{"k", KS_k},
-	{"l", KS_l},
-	{"{", KS_braceleft},
-	{"z", KS_z},
-	{"x", KS_x},
-	{"c", KS_c},
-	{"v", KS_v},
-	{"b", KS_b},
-	{"n", KS_n},
-	{"m", KS_m},
-	{",", KS_comma},
-	{";", KS_semicolon},
-	{".", KS_period},
-	{":", KS_colon},
-	{"-", KS_slash},
-	{"_", KS_underscore},
-	{"1", KS_1},
-	{"2", KS_2},
-	{"3", KS_3},
-	{"4", KS_4},
-	{"5", KS_5},
-	{"6", KS_6},
-	{"7", KS_7},
-	{"8", KS_8},
-	{"9", KS_9},
-	{"0", KS_0},
-	{"}", KS_braceright},
-  {"", 0}
-};
-
-const char *keycatch(u8 keycode) {
-int i;
-	for (i = 0; i<47;i++) {
-		if (keycode == KS[i].kb) {
-			return KS[i].ch;
-		} else {
-			return "";
-		}
-	}
-	return "";
-}
+char string[256];
+int i = 1;
 
 static int Controls_kbdread(lua_State *l) {
-if(lua_gettop(l) != 0) return luaL_error(l, "Wrong number of elements.");
-s32 res = KEYBOARD_GetEvent(&ke);
-	if (res && (ke.type == KEYBOARD_PRESSED)) { 
-		lua_pushstring(l, keycatch(ke.keycode));
-	} else {
-		lua_pushstring(l, "");
+SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		switch(event.type) {
+			case SDL_KEYDOWN:
+				char* key = SDL_GetKeyName(event.key.keysym.sym);
+			break;
+		}
 	}
 	return 1; 
 }

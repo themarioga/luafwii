@@ -5,6 +5,12 @@ SDL_Surface *screens = NULL;
 TTF_Font *errorfont;
 SDL_Surface *error_text_surface;
 
+void keyPress_cb(char sym) {
+	if (sym > 31 ) putchar(sym);
+	if (sym == 13) putchar('\n');
+	if (sym == 0x1b) putchar('\0');
+}
+
 void InitSDL() {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 	fatInitDefault();
@@ -14,7 +20,8 @@ void InitSDL() {
 	WPAD_SetDataFormat(WPAD_CHAN_0, WPAD_FMT_BTNS_ACC_IR);
 	ASND_Init();
 	MP3Player_Init();
-	KEYBOARD_Init(NULL);
+	MODPlay_Init(&play);
+	KEYBOARD_Init(keyPress_cb);
     atexit(SDL_Quit);
     SDL_ShowCursor(SDL_DISABLE);
     screens = SDL_SetVideoMode(640, 480, 16, SDL_DOUBLEBUF);
@@ -61,4 +68,5 @@ int wavPlayer(const char* file) {
     }
     return 1;
 }
+
 

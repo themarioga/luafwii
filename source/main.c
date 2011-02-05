@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 				fontPrintf(2, 2, "Error: %s\n", lua_tostring(l, -1));
 				fontPrintf(2, 20, "Pulsa Home para salir.");
 				SDL_Flip(screens);
-				lua_pop(l, 1); // remove error message
+				lua_pop(l, 1);
 			}
 			WPAD_ScanPads();
 			pressod = WPAD_ButtonsDown(0);

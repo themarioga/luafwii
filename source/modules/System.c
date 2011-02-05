@@ -9,7 +9,7 @@ if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 }
 static int lua_systemExitHBC(lua_State *l) {
 	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
-		exit(0);
+	exit(0);
 	return 1;
 }
 static int lua_getCurrentDirectory(lua_State *l) {

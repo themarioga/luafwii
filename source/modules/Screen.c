@@ -1,9 +1,10 @@
 #include "../functions.h"
 
+UserdataStubs(Image, SDL_Surface*)
+
 SDL_Surface *text_surface;
 TTF_Font *font;
-SDL_Color color = {255,255,255};
-SDL_Surface *image;
+SDL_Color fcolor = {255,255,255};
 
 //screens
 static int lua_screenClear(lua_State *l) {
@@ -31,6 +32,16 @@ static int lua_screenPrintf(lua_State *l) {
 	int y1 = luaL_checkint(l, 2);
 	const char *texto = luaL_checkstring(l, 3);
 	fontPrintf(x1, y1, texto);
+	return 1;
+}
+static int lua_screenPrintfSetColor(lua_State *l) {
+	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
+	int red = luaL_checkint(l, 1);
+	int g = luaL_checkint(l, 2);
+	int b = luaL_checkint(l, 3);
+	errorcolor.r = red;
+	errorcolor.g = g;
+	errorcolor.b = b;
 	return 1;
 }
 static int lua_screenColor(lua_State *l) {
@@ -184,7 +195,7 @@ static int lua_screenFontWrite(lua_State *l) {
 	if (font == NULL) {
 		return luaL_error(l, "lua cannot load font");
 	} else {
-	text_surface=TTF_RenderText_Solid(font, texto, color);
+	text_surface=TTF_RenderText_Solid(font, texto, fcolor);
 	apply_surface(x1, y1, text_surface, screens, NULL);
 	free_surf(text_surface);
 	}
@@ -195,9 +206,9 @@ static int lua_screenFontSetColor(lua_State *l) {
 	int red = luaL_checkint(l, 1);
 	int g = luaL_checkint(l, 2);
 	int b = luaL_checkint(l, 3);
-	color.r = red;
-	color.g = g;
-	color.b = b;
+	fcolor.r = red;
+	fcolor.g = g;
+	fcolor.b = b;
 	return 1;
 }
 static int lua_screenFontStop(lua_State *l) {
@@ -205,22 +216,35 @@ static int lua_screenFontStop(lua_State *l) {
 	TTF_Quit();
 	return 1;
 }
-static int lua_screenImageLoad(lua_State *l) {
-	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
+
+
+static int lua_imageLoad(lua_State *l) {
+	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *file = luaL_checkstring(l, 1);
+	SDL_Surface* image = IMG_Load(file);
+	SDL_Surface** buffer = pushImage(l);
+	*buffer = image;
+	return 1;
+}
+static int lua_imageBlit(lua_State *l) {
+	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
+	SDL_Surface *image = *toImage(l, 1);
 	int x1 = luaL_checkint(l, 2);
 	int y1 = luaL_checkint(l, 3);
-	image = IMG_Load(file);
-	if (image == NULL) {
-		return luaL_error(l, "lua cannot load image");
-	} else {
-		apply_surface(x1,y1, image, screens, NULL);
-		free_surf(image);
-	}
+	apply_surface(x1,y1, image, screens, NULL);
+	return 1;
+}
+static int lua_imageFree(lua_State *l) {
+	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
+	SDL_Surface *image = *toImage(l, 1);
+	free_surf(image);
 	return 1;
 }
 
 static const struct luaL_reg Screen[] = {
+  {"imageLoad",lua_imageLoad},
+  {"imageBlit",lua_imageBlit},
+  {"imageFree",lua_imageFree},
   {"fontLoad",lua_screenFontLoad},
   {"fontClose",lua_screenFontClose},
   {"fontWrite",lua_screenFontWrite},
@@ -231,8 +255,8 @@ static const struct luaL_reg Screen[] = {
   {"clear",lua_screenClear},
   {"delay",lua_screenDelay},
   {"print",lua_screenPrintf},
+  {"printSetColor",lua_screenPrintfSetColor},
   {"drawPixel",lua_screenPixel},
-  {"imageLoad",lua_screenImageLoad},
   {"drawfillBox",lua_screenfillBox},
   {"drawBox",lua_screenBox},
   {"drawfillCircle",lua_screenfillCircle},
@@ -247,5 +271,7 @@ static const struct luaL_reg Screen[] = {
 
 int luaopen_Screen(lua_State *l) {
 	luaL_register(l, "Screen", Screen);
+	Image_register(l);
     return 1;
 }
+
