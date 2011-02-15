@@ -19,12 +19,12 @@ int accelx, accely, accelz;
 int gforcex, gforcey;
 int orientroll, orientpitch, orientyaw;
 
-keyboard_event ke;
+//keyboard_event ke;
 
 char string[256];
 int i = 1;
 
-static int Controls_kbdread(lua_State *l) {
+/**static int Controls_kbdread(lua_State *l) {
 SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		switch(event.type) {
@@ -44,7 +44,7 @@ s32 res = KEYBOARD_GetEvent(&ke);
 		lua_pushnumber(l, 0);
 	}
 	return 1; 
-}
+}*/
 
 static int Controls_read(lua_State *l) {
 	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
@@ -274,8 +274,8 @@ static const luaL_reg Controls[] = {
 	{"pressNunZ", Controls_padNunZ },
 	{"heldNunZ", Controls_preNunZ },
 	{"releaseNunZ", Controls_relNunZ },
-	{"kbdRead", Controls_kbdread },
-	{"kbdIsConnected", Controls_kbdisconnected },
+	/**{"kbdRead", Controls_kbdread },
+	{"kbdIsConnected", Controls_kbdisconnected },*/
   {NULL, NULL}
 };
 
