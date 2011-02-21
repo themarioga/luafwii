@@ -226,9 +226,9 @@ static int lua_imageLoad(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *file = luaL_checkstring(l, 1);
 	SDL_Surface* image = IMG_Load(file);
+	if (!image) return luaL_error(l, IMG_GetError());
 	SDL_Surface** buffer = pushImage(l);
 	*buffer = image;
-	free_surf(image);
 	return 1;
 }
 static int lua_imageBlit(lua_State *l) {
@@ -244,8 +244,20 @@ static int lua_imageFree(lua_State *l) {
 	free_surf(*toImage(l, 1));
 	return 1;
 }
+static int lua_imageLoadinOne(lua_State *l) {
+	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
+	int x1 = luaL_checkint(l, 1);
+	int y1 = luaL_checkint(l, 2);
+	const char *file = luaL_checkstring(l, 3);
+	SDL_Surface* image = IMG_Load(file);
+	if (!image) return luaL_error(l, IMG_GetError());
+	apply_surface(x1,y1, image, screens, NULL);
+	free_surf(image);
+	return 1;
+}
 
 static const struct luaL_reg Screen[] = {
+  {"imageLoadinOne",lua_imageLoadinOne},
   {"imageLoad",lua_imageLoad},
   {"imageBlit",lua_imageBlit},
   {"imageFree",lua_imageFree},

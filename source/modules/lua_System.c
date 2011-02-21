@@ -1,6 +1,13 @@
 #include "../functions.h"
 #include <errno.h>
 
+static int lua_millisecs(lua_State *l) {
+	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
+	float times_per_second = 1000.0;
+	float tiempo = (float) (clock() / times_per_second);
+	lua_pushnumber(l, tiempo);
+	return 1;
+}
 static int lua_systemSleep(lua_State *i) {
 if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	int xm = luaL_checkint(l, 1);
@@ -136,6 +143,7 @@ static int lua_pathDir (lua_State *L) {
 }
 
 static const struct luaL_reg System[] = {
+	{"millisecs",lua_millisecs},
 	{"sleep",lua_systemSleep},
 	{"getDir",lua_getdir},
 	{"getDName",lua_getname},

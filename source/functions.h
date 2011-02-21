@@ -14,6 +14,7 @@
 #include <math.h>
 #include <dirent.h>
 #include <filebrowser.h>
+#include <asndlib.h>
 #include <mp3player.h>
 #include <fat.h>
 #include <wiiuse/wpad.h> 

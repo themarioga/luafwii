@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 		if (s) {
 			if (lua_tostring(l, -1)) {
 				SDL_FillRect(screens, 0, SDL_MapRGB(screens->format, 0,0,0));
-				fontPrintf(2, 2, "Error: %s\n", lua_tostring(l, -1));
+				fontPrintf(2, 2, "Error: %s", lua_tostring(l, -1));
 				fontPrintf(2, 20, "Pulsa Home para salir.");
 				SDL_Flip(screens);
 				lua_pop(l, 1);
