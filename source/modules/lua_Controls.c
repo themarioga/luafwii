@@ -1,106 +1,45 @@
 #include "../functions.h"
 
-u32 pad;
-u32 pre;
-u32 rel;
-ir_t ir;
-vec3w_t acc;
-expansion_t expan;
-gforce_t gfor;
-orient_t ori;
-int irx, iry, irax, iray, irsx, irsy, irangle;
-int accx, accy, accz;
-int gforx, gfory;
-int oriroll, oripitch, oriyaw;
+typedef struct WPADButtons {
+	u32 pad;
+	u32 pre;
+	u32 rel;
+	int wpad;
+} WPADButtons;
 
-int mag, ang;
-int posx, posy, centerx, centery, minx, miny, maxx, maxy;
-int accelx, accely, accelz;
-int gforcex, gforcey;
-int orientroll, orientpitch, orientyaw;
-
-//keyboard_event ke;
-
-char string[256];
-int i = 1;
-
-/**static int Controls_kbdread(lua_State *l) {
-SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch(event.type) {
-			case SDL_KEYDOWN:
-				char* key = SDL_GetKeyName(event.key.keysym.sym);
-			break;
-		}
-	}
-	return 1; 
-}
-static int Controls_kbdisconnected(lua_State *l) {
-if(lua_gettop(l) != 0) return luaL_error(l, "Wrong number of elements.");
-s32 res = KEYBOARD_GetEvent(&ke);
-	if (res && (ke.type == KEYBOARD_CONNECTED)) { 
-		lua_pushnumber(l, 1);
-	} else {
-		lua_pushnumber(l, 0);
-	}
-	return 1; 
-}*/
+toPush(CB, WPADButtons)
+toPush(CD, WPADData*)
 
 static int Controls_read(lua_State *l) {
 	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
 	int wpad = luaL_checkint(l, 1);
 	WPAD_ScanPads();
-	pad = WPAD_ButtonsDown(wpad);
-	rel = WPAD_ButtonsUp(wpad);
-	pre = WPAD_ButtonsHeld(wpad);
+	WPADButtons cb;
+	cb.pad = WPAD_ButtonsDown(wpad);
+	cb.rel = WPAD_ButtonsUp(wpad);
+	cb.pre = WPAD_ButtonsHeld(wpad);
+	WPADButtons *CB = pushCB(l);
+	*CB = cb;
 	return 1;
 }
-static int Nunchuck_read(lua_State *l) {
+static int Data_read(lua_State *l) {
 	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
 	int wpad = luaL_checkint(l, 1);
-	WPAD_Expansion(wpad, &expan);
+	WPAD_ScanPads();
+	WPADData *cd = WPAD_Data(wpad);
+	WPADData** CD = pushCD(l);
+	*CD = cd;
 	return 1;
 }
-static int IR_read(lua_State *l) {
-	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
-	int wpad = luaL_checkint(l, 1);
-	WPAD_IR(wpad, &ir);
-	return 1;
-}
-static int Gforce_read(lua_State *l) {
-	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
-	int wpad = luaL_checkint(l, 1);
-	WPAD_GForce(wpad, &gfor);
-	return 1;
-}
-static int Acceleration_read(lua_State *l) {
-	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
-	int wpad = luaL_checkint(l, 1);
-	WPAD_Accel(wpad, &acc);
-	return 1;
-}
-static int Orientation_read(lua_State *l) {
-	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
-	int wpad = luaL_checkint(l, 1);
-	WPAD_Orientation(wpad, &ori);
-	return 1;
-}
-static int Controls_nunJoyAng(lua_State *l) {
-	ang = expan.nunchuk.js.ang;
-	lua_pushnumber(l, irsx);
-	return 1;
-}
-static int Controls_nunJoyMag(lua_State *l) {
-	mag = expan.nunchuk.js.mag;
-	lua_pushnumber(l, mag);
-	return 1;
-}
+
+//NUNCHUCK JOYSTICK
 #define CNJDataConv(NAMEFUN, TYPE, DATA) \
 	static int Controls_##NAMEFUN (lua_State *l) { \
-	TYPE##DATA = expan.nunchuk.js.TYPE.DATA; \
-	lua_pushnumber(l, TYPE##DATA); \
-	return 1; \
-}
+		if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements."); \
+		WPADData *cd = *toCD(l, 1);\
+		lua_pushnumber(l, cd->exp.nunchuk.js.TYPE.DATA); \
+		return 1; \
+	}
 CNJDataConv(nunJoyPosx, pos, x);
 CNJDataConv(nunJoyPosy, pos, y);
 CNJDataConv(nunJoyCenterx, center, x);
@@ -109,13 +48,26 @@ CNJDataConv(nunJoyMinx, min, x);
 CNJDataConv(nunJoyMiny, min, y);
 CNJDataConv(nunJoyMaxx, max, x);
 CNJDataConv(nunJoyMaxy, max, y);
+static int Controls_nunJoyAng(lua_State *l) {
+	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
+	WPADData *cd = *toCD(l, 1);
+	lua_pushnumber(l, cd->exp.nunchuk.js.ang);
+	return 1;
+}
+static int Controls_nunJoyMag(lua_State *l) {
+	WPADData *cd = *toCD(l, 1);
+	lua_pushnumber(l, cd->exp.nunchuk.js.mag);
+	return 1;
+}
 
+//NUNCHUCK
 #define CNDataConv(NAMEFUN, TYPE, DATA) \
 	static int Controls_##NAMEFUN (lua_State *l) { \
-	TYPE##DATA = expan.nunchuk.TYPE.DATA; \
-	lua_pushnumber(l, TYPE##DATA); \
-	return 1; \
-}
+		if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements."); \
+		WPADData *cd = *toCD(l, 1);\
+		lua_pushnumber(l, cd->exp.nunchuk.TYPE.DATA); \
+		return 1; \
+	}
 CNDataConv(nunAccelx, accel, x);
 CNDataConv(nunAccely, accel, y);
 CNDataConv(nunAccelz, accel, z);
@@ -125,12 +77,14 @@ CNDataConv(nunOrientRoll, orient, pitch);
 CNDataConv(nunOrientPitch, orient, roll);
 CNDataConv(nunOrientYaw, orient, yaw);
 
+//WIIMOTE DATA
 #define CDataConv(NAMEFUN, TYPE, DATA) \
 	static int Controls_##NAMEFUN (lua_State *l) { \
-	TYPE##DATA = TYPE.DATA; \
-	lua_pushnumber(l, TYPE##DATA); \
-	return 1; \
-}
+		if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements."); \
+		WPADData *cd = *toCD(l, 1);\
+		lua_pushnumber(l, cd->TYPE.DATA); \
+		return 1; \
+	}
 CDataConv(IRx, ir, x);
 CDataConv(IRy, ir, y);
 CDataConv(IRax, ir, ax);
@@ -138,23 +92,25 @@ CDataConv(IRay, ir, ay);
 CDataConv(IRsx, ir, sx);
 CDataConv(IRsy, ir, sy);
 CDataConv(IRangle, ir, angle);
-CDataConv(Accelx, acc, x);
-CDataConv(Accely, acc, y);
-CDataConv(Accelz, acc, z);
-CDataConv(Gforcex, gfor, x);
-CDataConv(Gforcey, gfor, y);
-CDataConv(OrientRoll, ori, pitch);
-CDataConv(OrientPitch, ori, roll);
-CDataConv(OrientYaw, ori, yaw);
+CDataConv(Accelx, accel, x);
+CDataConv(Accely, accel, y);
+CDataConv(Accelz, accel, z);
+CDataConv(Gforcex, gforce, x);
+CDataConv(Gforcey, gforce, y);
+CDataConv(OrientRoll, orient, roll);
+CDataConv(OrientPitch, orient, pitch);
+CDataConv(OrientYaw, orient, yaw);
 
+//WIIMOTE BUTTONS
 #define ControlsConv(NAMEFUN, NAMEBUT, TYPE) \
 	static int Controls_##NAMEFUN (lua_State *l) { \
-		if (TYPE & WPAD_##NAMEBUT) { \
+		if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements."); \
+		WPADButtons cb = *toCB(l, 1);\
+		if (cb.TYPE & WPAD_##NAMEBUT) { \
 			lua_pushnumber(l, 1); \
 		} \
-	return 1; \
-} 
-
+		return 1; \
+	} 
 ControlsConv(padNunC, NUNCHUK_BUTTON_C, pad);
 ControlsConv(preNunC, NUNCHUK_BUTTON_C, pre);
 ControlsConv(relNunC, NUNCHUK_BUTTON_C, rel);
@@ -197,11 +153,7 @@ ControlsConv(relhome, BUTTON_HOME, rel);
 
 static const luaL_reg Controls[] = {
 	{"read", Controls_read},
-	{"readNunchuck", Nunchuck_read},
-	{"readGforce", Gforce_read},
-	{"readAcceleration", Acceleration_read},
-	{"readOrientation", Orientation_read},
-	{"readIR", IR_read},
+	{"readData", Data_read},
 	{"IRx", Controls_IRx},
 	{"IRy", Controls_IRy},
 	{"IRrawx", Controls_IRax},

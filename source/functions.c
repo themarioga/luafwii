@@ -18,6 +18,7 @@ void InitSDL() {
     atexit(SDL_Quit);
     SDL_ShowCursor(SDL_DISABLE);
     screens = SDL_SetVideoMode(640, 480, 16, SDL_DOUBLEBUF);
+	errorfont=TTF_OpenFont("error.ttf", 16);
 }
 void free_surf(SDL_Surface* surf){
 	if(surf) SDL_FreeSurface(surf);
@@ -29,9 +30,6 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
     SDL_BlitSurface( source, clip, destination, &offset );
 }
 void fontWrite(int x, int y, const char* text) {
-	if (errorfont == NULL) {
-		errorfont=TTF_OpenFont("error.ttf", 16);
-	}
 	if (text != NULL && errorfont != NULL) {
 		error_text_surface=TTF_RenderText_Solid(errorfont, text, errorcolor);
 		apply_surface(x, y, error_text_surface, screens, NULL);
@@ -43,10 +41,29 @@ void fontWrite(int x, int y, const char* text) {
 void fontPrintf(int x, int y, const char *format, ...) {
     va_list opt;
     char buff[2048];
-    int bufsz;
     va_start(opt, format);
-    bufsz = vsnprintf(buff, sizeof(buff), format, opt);
+    vsnprintf(buff, sizeof(buff), format, opt);
     va_end(opt);
 	fontWrite(x, y, buff);
 }
-
+fileStruct fileLoad(const char* file) {
+	fileStruct fs;
+	FILE *fr;
+	fr= fopen(file, "rb");
+	if (!fr) {
+		fs.ret = -1;
+		return fs;
+	}
+	fseek(fr , 0 , SEEK_END);
+	fs.size = ftell(fr);
+	rewind(fr);
+	fs.buffer = (char*) malloc (sizeof(char)*fs.size);
+	fread(fs.buffer,1,fs.size,fr);
+	if (!fs.buffer) {
+		fclose(fr);
+		fs.ret = -2;
+		return fs;
+	}
+	fclose(fr);
+	return fs;
+}

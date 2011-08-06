@@ -54,12 +54,11 @@ if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	unlink(path);
 	return 1;
 }
-static int lua_createFile(lua_State *l) {
+static int lua_checkFile(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *path = luaL_checkstring(l, 1);
 	FILE *fichero = fopen(path, "r");
-	if(!fichero){
- 		fichero = fopen(path, "w");
+	if(fichero){
 		lua_pushnumber(l, 1);
  	}else{
 		lua_pushnumber(l, 0);
@@ -154,7 +153,7 @@ static const struct luaL_reg System[] = {
 	{"currentDir",lua_curdir},
 	{"createDir",lua_createDir},
 	{"removeDir",lua_removeDir},
-	{"createFile",lua_createFile},
+	{"checkFile",lua_checkFile}, //Cambiado
 	{"removeFile",lua_removeFile},
 	{"renameFile",lua_renameFile},
 	{"moveFile",lua_moveFile},

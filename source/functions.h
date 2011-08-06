@@ -15,7 +15,11 @@
 #include <dirent.h>
 #include <filebrowser.h>
 #include <asndlib.h>
+#include <aesndlib.h>
 #include <mp3player.h>
+#include <oggplayer.h>
+#include <wavplayer.h>
+#include <gcmodplay.h>
 #include <fat.h>
 #include <wiiuse/wpad.h> 
 #include <wiikeyboard/keyboard.h>
@@ -40,9 +44,15 @@ lua_State *l;
 TTF_Font *errorfont;
 SDL_Surface *error_text_surface;
 SDL_Color errorcolor;
+typedef struct fileStruct {
+	char *buffer;
+	long size;
+	int ret;
+} fileStruct;
 
 void InitSDL();
 void free_surf(SDL_Surface* surf);
 void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip);
 void udelay(int us);
 void fontPrintf(int x, int y, const char *format, ...);
+fileStruct fileLoad(const char* file);
