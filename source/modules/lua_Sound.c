@@ -30,15 +30,24 @@ if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	return 1;
 }
 static int lua_soundWavPlay(lua_State *l) {
-if (lua_gettop(l) != 1 && lua_gettop(l) != 2) return luaL_error(l, "wrong number of arguments");
+if (lua_gettop(l) != 2 && lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
 	wavStruct pFmt = *toWav(l, 1);
+	int repeat = luaL_checkint(l, 2);
 	if (pFmt.sample_buf) {
 		pFmt.voice = ASND_GetFirstUnusedVoice();
-		if (lua_gettop(l) == 1) {
-			ASND_SetVoice(pFmt.voice, VOICE_STEREO_16BIT, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255, NULL);
-		} else if (lua_gettop(l) == 2) {
-			s32 bits = luaL_checkint(l, 2);
-			ASND_SetVoice(pFmt.voice, bits, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255, NULL);
+		if (lua_gettop(l) == 2) {
+			if (repeat == 0) {
+				ASND_SetVoice(pFmt.voice, VOICE_STEREO_16BIT, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255, NULL);
+			} else {
+				ASND_SetInfiniteVoice(pFmt.voice, VOICE_STEREO_16BIT, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255);
+			}
+		} else if (lua_gettop(l) == 3) {
+			s32 bits = luaL_checkint(l, 3);
+			if (repeat == 0) {
+				ASND_SetVoice(pFmt.voice, bits, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255, NULL);
+			} else {
+				ASND_SetInfiniteVoice(pFmt.voice, bits, pFmt.pFmt.sample_rate,0, pFmt.sample_buf, pFmt.pFmt.sample_channel * pFmt.pFmt.sample_count * pFmt.pFmt.sample_byte, 255, 255);
+			}
 		}
 	} else {
 		return luaL_error(l, "could not play");
@@ -116,7 +125,7 @@ static int lua_soundOggLoad(lua_State *l) {
 	return 1;
 }
 static int lua_soundOggPlay(lua_State *l) {
-	if (lua_gettop(l) != 2) return luaL_error(l, "wrong number of arguments");
+	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
 	fileStruct mp3 = *toMp3Ogg(l, 1);
 	if (!mp3.buffer) {
 		return luaL_error(l, "could not play");

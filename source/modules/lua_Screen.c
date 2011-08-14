@@ -5,9 +5,13 @@ toPush(Font, TTF_Font*)
 
 //screens
 static int lua_screenCreateSurface(lua_State *l) {
-	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
-	SDL_Surface* image = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 32, 0, 0, 0, 0);
-	if (!image) return luaL_error(l, IMG_GetError());
+	if (lua_gettop(l) != 0 && lua_gettop(l) != 2) return luaL_error(l, "wrong number of arguments");
+	SDL_Surface* image;
+	if (lua_gettop(l) == 0) { 
+		image = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 32, 0, 0, 0, 0);
+	} else {
+		image = SDL_CreateRGBSurface(SDL_SWSURFACE, luaL_checkint(l, 1), luaL_checkint(l, 2), 32, 0, 0, 0, 0);
+	}
 	SDL_Surface** buffer = pushImage(l);
 	*buffer = image;
 	return 1;
@@ -242,72 +246,34 @@ static int lua_screenFontClose(lua_State *l) {
 	return 1;
 }
 static int lua_screenFontWrite(lua_State *l) {
-	if (lua_gettop(l) != 3 && lua_gettop(l) != 4 && lua_gettop(l) != 6 && lua_gettop(l) != 7) return luaL_error(l, "wrong number of arguments");
-	int x = luaL_checkint(l, 1);
-	int y = luaL_checkint(l, 2);
-	const char *texto = luaL_checkstring(l, 3);
-	SDL_Surface *text_surface;
-	SDL_Color font_color;
-	if (lua_gettop(l) == 3) { 
-		text_surface=TTF_RenderText_Solid(errorfont, texto, errorcolor);
-		apply_surface(x, y, text_surface, screens, NULL);
-		free_surf(text_surface);
-	} else if (lua_gettop(l) == 4) {
-		TTF_Font *font = *toFont(l, 4);
-		text_surface=TTF_RenderText_Solid(font, texto, errorcolor);
-		apply_surface(x, y, text_surface, screens, NULL);
-		free_surf(text_surface);
-	} else if (lua_gettop(l) == 6) {
-		font_color.r = luaL_checkint(l, 4);
-		font_color.g = luaL_checkint(l, 5);
-		font_color.b = luaL_checkint(l, 6);
-		text_surface=TTF_RenderText_Solid(errorfont, texto, font_color);
-		apply_surface(x, y, text_surface, screens, NULL);
-		free_surf(text_surface);
-	} else if (lua_gettop(l) == 7) {
-		font_color.r = luaL_checkint(l, 4);
-		font_color.g = luaL_checkint(l, 5);
-		font_color.b = luaL_checkint(l, 6);
-		TTF_Font *font = *toFont(l, 7);
-		if (!font) return luaL_error(l, "no font");
-		text_surface=TTF_RenderText_Solid(font, texto, font_color);
-		apply_surface(x, y, text_surface, screens, NULL);
-		free_surf(text_surface);
-	}
-	return 1;
-}
-static int lua_screenFontWritetoSurface(lua_State *l) {
 	if (lua_gettop(l) != 4 && lua_gettop(l) != 5 && lua_gettop(l) != 7 && lua_gettop(l) != 8) return luaL_error(l, "wrong number of arguments");
 	int x = luaL_checkint(l, 1);
 	int y = luaL_checkint(l, 2);
 	const char *texto = luaL_checkstring(l, 3);
-	SDL_Surface *surface = *toImage(l, 4);
+	TTF_Font *font = *toFont(l, 4);
 	SDL_Surface *text_surface;
 	SDL_Color font_color;
-	if (lua_gettop(l) == 4) { 
-		text_surface=TTF_RenderText_Solid(errorfont, texto, errorcolor);
-		apply_surface(x, y, text_surface, surface, NULL);
+	if (lua_gettop(l) == 4) {
+		text_surface=TTF_RenderText_Solid(font, texto, errorcolor);
+		apply_surface(x, y, text_surface, screens, NULL);
 		free_surf(text_surface);
 	} else if (lua_gettop(l) == 5) {
-		TTF_Font *font = *toFont(l, 5);
 		text_surface=TTF_RenderText_Solid(font, texto, errorcolor);
-		apply_surface(x, y, text_surface, surface, NULL);
+		apply_surface(x, y, text_surface, *toImage(l, 5), NULL);
 		free_surf(text_surface);
 	} else if (lua_gettop(l) == 7) {
 		font_color.r = luaL_checkint(l, 5);
 		font_color.g = luaL_checkint(l, 6);
 		font_color.b = luaL_checkint(l, 7);
-		text_surface=TTF_RenderText_Solid(errorfont, texto, font_color);
-		apply_surface(x, y, text_surface, surface, NULL);
+		text_surface=TTF_RenderText_Solid(font, texto, font_color);
+		apply_surface(x, y, text_surface, screens, NULL);
 		free_surf(text_surface);
 	} else if (lua_gettop(l) == 8) {
 		font_color.r = luaL_checkint(l, 5);
 		font_color.g = luaL_checkint(l, 6);
 		font_color.b = luaL_checkint(l, 7);
-		TTF_Font *font = *toFont(l, 8);
-		if (!font) return luaL_error(l, "no font");
 		text_surface=TTF_RenderText_Solid(font, texto, font_color);
-		apply_surface(x, y, text_surface, surface, NULL);
+		apply_surface(x, y, text_surface, *toImage(l, 8), NULL);
 		free_surf(text_surface);
 	}
 	return 1;
@@ -327,7 +293,6 @@ static int lua_imageBlit(lua_State *l) {
 	int x = luaL_checkint(l, 1);
 	int y = luaL_checkint(l, 2);
 	SDL_Surface *image = *toImage(l, 3);
-	if (!image) return luaL_error(l, "no image");
 	if (lua_gettop(l) == 3) {
 		apply_surface(x,y, image, screens, NULL);
 	} else if (lua_gettop(l) == 4) {
@@ -395,7 +360,6 @@ static const struct luaL_reg Screen[] = {
   {"fontLoad",lua_screenFontLoad}, 
   {"fontClose",lua_screenFontClose},
   {"fontWrite",lua_screenFontWrite}, 
-  {"fontWritetoSurface",lua_screenFontWritetoSurface}, 
   {"print",lua_screenPrintf},
   {"printSetColor",lua_screenPrintfSetColor}, 
   {"color",lua_screenColor},
