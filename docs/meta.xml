@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+	<name>LuaFWii</name>
+	<coder>the_marioga</coder>
+	<version>v1.1</version>
+	<release_date>140820110000</release_date>
+	<short_description>LuaPlayer para Wii</short_description>
+	<long_description>
+	LuaFWii, el LuaPlayer para wii creado por the_marioga, ganador del SceneryBeta 2010.
+	Este homebrew te permite cargar tus homebrew y script de lua en tu Wii.
+	Para usarla solamente tienes que copiar tu script.lua al lado del archivo dol y a disfrutar
+	</long_description>
+</app>

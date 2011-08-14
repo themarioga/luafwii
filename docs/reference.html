@@ -1,0 +1,631 @@
+<html>
+	<head>
+		<title>Guia de Referencia de LuaFWii</title>
+		<script type="text/javascript">
+			function spoiler(spoiler_div) {
+				var spoiler_content = document.getElementById(spoiler_div);
+				if (spoiler_content.style.display == 'block') {
+					spoiler_content.style.display = 'none';
+				} else {
+					spoiler_content.style.display = 'block';
+				}
+			}
+		</script>
+		<style>
+		h2 {
+			position: relative;
+			left: 20px;
+			top: 10px;
+			text-decoration: underline;
+		}
+		#logo {
+			background-image:url('logo.png');
+			width: 128px;
+			height: 48px;
+			border-style: solid;
+			border-width: 2px;
+			border-color: #000000;
+			border-radius: 5px;
+		}
+		#index {
+			position: relative;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #000000;
+			border-radius: 15px;
+			box-shadow: 1px 1px 1px #000000;
+			padding: 5px;
+			background-color: #EEEEEE;
+			width: 20%;
+			left: 40%;
+			text-align: center;
+		}
+		#content {
+			font-family: Arial, 'Lucida Sans Unicode', Helvetica, sans-serif;
+			font-size: 12px;
+			border-style:solid;
+			border-width: 1px;
+			border-color: #000000;
+			border-radius: 15px;
+			box-shadow: 1px 1px 1px #000000;
+			padding: 5px;
+			margin: 5px;
+			background-color: #DDDDDD;
+		}
+		#spoiler {
+			margin: 10px;
+			padding: 5px;
+			background-color: #CCCCCC;
+			border: 3px;
+			border-color: #000000;
+			box-shadow: 3px 3px 3px #000000;
+			border-radius: 10px;
+		}
+		#function {
+			margin: 10px;
+			padding: 5px;
+			background-color: #DDDDDD;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #000000;
+			border-radius: 15px;
+			box-shadow: 1px 1px 1px #000000;
+		}
+		#function_name {
+			background-color:#FFFFFF;
+		}
+		#function_desc {
+			border-style: solid;
+			border-width: 1px;
+			border-color: #BBBBBB;
+		}
+		#function_sample {
+			margin: 5px;
+			padding: 3px;
+			background-color: #EEEEEE;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #FFFFFF;
+			border-radius: 15px;
+			box-shadow: 1px 1px 1px #000000;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="logo"></div>
+		<div id="index">
+			<b>Indice</b><br>
+			<a href="#Intro">Introduccion</a><br>
+			<a href="#HowTo">HowTo</a><br>
+			<a href="#Changelog">Changelog</a><br>
+			<a href="#Screen">Screen</a><br>
+			<a href="#Sound">Sound</a><br>
+			<a href="#Controls">Controls</a><br>
+			<a href="#System">System</a><br>
+			<a href="#Timer">Timer</a><br>
+		</div>
+		<div id="content">
+			<div id="Intro">
+				<a href="#index"><h2>Introduccion a LuaFWii</h2></a>
+				LuaFWii es un lua player para wii. Ademas de ser el primer lua player para wii con funciones adicionales. Actualmente esta en un estado de desarrollo bastante avanzado<br>
+				Gracias a mdbrim por ayudarme con los WAV, a rubenelportero y csar.ale betatesters oficiales del proyecto, y a deviante por algunos consejos.<br>
+			</div>
+			<div id="HowTo">
+				<a href="#index"><h2>Como usar LuaFWii</h2></a>
+				Para usar el script predeterminado es tan simple como extraer en la raiz de tu SD y a continuacion acceder a Homebrew Channel, seleccionar LuaFWii (pulsando A encima) y darle a cargar.<br>
+				Para usar tu script descomprime en la raiz y ve a la carpeta sd:/apps/LuaFWii1.1, sustituye el script.lua por el tuyo. Si lo deseas tambien puedes cambiar el meta.xml y el ICON.png. Tambien puedes cambiar el nombre de la carpeta.<br>
+				Si deseas cambiar la fuente usada para mostrar los errores sustituye error.ttf por la que tu quieras. Una vez que sepas que tu homebrew no tiene errores puedes eliminarla, si se produjera algun bug inesperado regresara al homebrew channel sin mostrar nada. (Recuerda que Screen.print usa la fuente por defecto)<br>
+			</div>
+			<div id="Changelog">
+				<a href="#index"><h2>Changelog</h2></a>
+				<b>1.1</b><br>
+				Se añaden las funciones OggLoad, oggPlay, oggFree y oggisPlaying, y el argumento repeat en wavPlay
+				Permite mostrar parte de la imagen (para paletas de imagenes)<br>
+				Se añaden surfaceCreate, surfaceBlit y surfaceFree (Parecido a imageCreateEmpty de psp, crea un surface donde puedes mostrar texto e imagenes, y luego copiarlo a la pantalla)<br>
+				Posibilidad de mostrar texto e imagenes en surface o pantalla<br>
+				Se añade esta guia de referencia<br>
+<br>
+				<b>1.00</b><br>
+				Se añaden funciones de Timers<br>
+				Se añade mover y renombrar archivos, y borrar directorios a System<br>
+				Se separan funciones de imagen, wav y fuentes en Load, Blit y Free<br>
+				Posibilidad de Cambiar color por defecto a print<br>
+				Carga contest_splash.png al inicio si existe<br>
+				Corregido error en FontWrite<br>
+				Mejoras y cambios varios en Controls<br>
+				Algunos cambios en Screen.delay y funciones Screen.draw<br>
+				Mejorada la estabilidad y velocidad<br>
+<br>
+				<div id="Spoiler">Spoiler: <a href="#Changelog" onclick="spoiler('spoiler_content')">Mostrar/Ocultar</a>
+					<div id="spoiler_content" style="display: none;">
+						<b><u>Versiones Antiguas (Lentas)</b></u><br>
+						<b>0.99</b><br>
+						Cargar y Reproducir WAV<br>
+						Colores en RGB y RGBA<br>
+						Funcion de color<br>
+						Bajar un poco el error porque se sale de la pantalla en alguna tele<br>
+<br>
+						<b>0.96 SB Edition</b><br>
+						Se añaden muchas nuevas funciones de Controls<br>
+						Se cambia la funcion de print (aunque apenas se nota)<br>
+						Se añade "sistema de emergencia" pa que no crashee si se quita el splash (o se cambia por otro) en lugar de eso sale el homebrew channel<br>
+						Otras mejoras en el codigo<br>
+<br>
+						<b>0.95 SB Edition</b><br>
+						Se cambia el sistema de explorador de archivos<br>
+						Se añade funcion printf (sin tener que elegir fuente, usa la error.ttf por defecto)<br>
+						Se añade funcion de delay (como waitVBlankStart en PSP)<br>
+						Se añade el slash de scenebeta<br>
+						Se añade script por defecto con explorador<br>
+<br>
+						<b>0.9</b><br>
+						Se arreglan los bugs al reproducir ogg y mp3<br>
+						Se incorpora "sistema de emergencia" para que no crashee si no se encuentra la fuente error.ttf<br>
+<br>
+						<b>0.8</b><br>
+						Lo he portado a SDL y ello conlleva las siguientes mejoras<br>
+						-Se soportan todos los formatos de imagen de SDL, ademas de las transparencias en png<br>
+						-Se soportan todos los formatos de sonido de SDL, aunque esto mas que una ventaja es un inconveniente ya que es muy malo leyendo mp3 y ogg (ya vere como arreglo esto)<br>
+						-Se soportan muchas mas figuras geometricas<br>
+						-El texto va por fuentes (como inconveniente, no se puede usar printf, ni fprintf, ni sprintf, ni ninguno de estos)<br>
+						Por otra parte tambiene mejorado la forma en que carga los modulos (sound, screen, controls y system) para que vaya mas rapido<br>
+<br>
+						<b><u>Versiones Antiguas (Sin SDL)</b></u><br>
+						<b>v0.7</b><br>
+						Se añaden funciones para gestion de archivos y carpetas (faltan algunas que se iran incorporando) las podeis ver en el txt en el apartado system <br>
+<br>
+						<b>v0.6</b><br>
+						Se añaden deteccion de held(mantener pulsado) y release(soltar) a wiimote y se añade soporte a nunchuck (no incluye el txt) y soporte a mas de 1 wiimote(se puede poner el numero del wiimote(0, 1, 2 o 3) o para todos a la vez (-1)) <br>
+<br>
+						<b>v0.5</b><br>
+						Se añade soporte a wiimote y txt con las funciones<br>
+<br>
+						<b><u>Versiones MOD (Sin Wiimote)</b></u><br>
+						<b>MODv0.4.5</b><br>
+						·Se arreglan bugs <br>
+						·Se cambia la estructura del programa <br>
+<br>
+						<b>MODv0.4</b><br>
+						·Se añade carga de Imagenes y captura de Imagenes <br>
+						.Se añade varias funciones para oir, pausar, parar, etc... archivos en ogg y mp3 <br>
+<br>
+						<b>MODv0.3</b><br>
+						·Se añaden funciones para escribir en coordenadas y dibujar <br>
+<br>
+						<b>MODv0.2</b><br>
+						·Se mejora el codigo para reducir los errores y aumentar la velocidad <br>
+<br>
+						<b>MODv0.1</b><br>
+						·Release Inicial. Port del 5.1.4.<br>
+					</div>
+				</div>
+			</div>	
+			<div id="Screen">
+				<a href="#index"><h2>Screen</h2></a>
+				<h6>Nota: lo que esta entre [ ] quiere decir que es opcional, pero estos simbolos no hay que ponerlos a la hora de usar la funcion</h6>
+				<div id="function">
+					<p id="function_name">Screen.color(r, g, b[, a])</p> 
+					<p id="function_desc">Carga un color especificado en RGB en la variable asignada, tambien soporta Alpha (transparencia, añadiendo un cuarto numero de 0 a 255)</p>
+					<p id="function_sample">negro = Screen.color(0, 0, 0) --Color negro opaco<br> negro_alpha = Screen.color(0, 0, 0, 180) --Color negro semitransparente</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.delay(s)</p>
+					<p id="function_desc">Congela la pantalla el numero de segundos especificado</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.flip()</p>
+					<p id="function_desc">Muestra todo en pantalla.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.surfaceCreate([w, h])</p>
+					<p id="function_desc">Crea un surface, una superficie virtual que emula a la pantalla en la cual se puede mostrar texto e imagenes, opcionalmente se puede especificar el tamaño, sino usa el tamaño por defecto (640x480).</p>
+					<p id="function_sample">surface = Screen.surfaceCreate(320, 240) --Crea una surface de ese tamaño y la almacena en la variable surface<br>surface = Screen.surfaceCreate() --Crea una surface de 640x480</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.surfaceBlit(x, y, surface)</p>
+					<p id="function_desc">Copia un surface a pantalla.</p>
+					<p id="function_sample">surface = Screen.surfaceCreate() --Crea una surface<br>Screen.surfaceBlit(1, 1, surface) --Copia la surface a pantalla en el pixel 1, 1</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.surfaceFree(surface)</p>
+					<p id="function_desc">Libera un surface.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.print(x, y, text)</p> 
+					<p id="function_desc">Muestra el texto especificado en pantalla usando la fuente por defecto (error.ttf) en las coordenadas dadas.</p>
+					<p id="function_sample">Screen.print(1, 1, "Hola mundo") --Muestra el texto Hola mundo en las coordenadas dadas</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.printSetColor(r, g, b)</p>
+					<p id="function_desc">Cambia el color por defecto para el texto.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.clear(color[, surface])</p>
+					<p id="function_desc">Limpia la pantalla del color indicado entre parentesis. Este tiene que definirse previamente con Screen.color.</p>
+					<p id="function_sample">negro = Screen.color(0, 0, 0) --Cargamos el color negro<br>Screen.clear(negro) --Limpiamos la pantalla de ese color<br>Screen.clear(negro, surface) --Limpiamos el surface especificado de ese color</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.fontLoad(font_file, size)</p>
+					<p id="function_desc">Carga una fuente, entre parentesis se pone la rute de la imagen y el tamaño de la letra.</p>
+					<p id="function_sample">font = Screen.fontLoad("dejavu_sans.ttf", 16) --Cargamos la fuente dejavu_sans.ttf en tamaño 16</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.fontWrite(x, y, text, font[, r, g, b][, surface])</p> 
+					<p id="function_desc">Muestra el texto en las coordenasdas especificadas, con la fuente previamente cargada, opcionalmente se puede elegir el color del texto y si se desea mostrar en una surface en lugar de en pantalla.</p>
+					<p id="function_sample">font = Screen.fontLoad("dejavu_sans.ttf", 16) --Cargamos la fuente dejavu_sans.ttf en tamaño 16<br>Screen.fontWrite(1, 1, "Hola mundo", font) --Aqui mostramos el texto Hola mundo en las coordenadas 1, 1, con la fuente cargada y el color por defecto<br>Screen.fontWrite(1, 1, "Hola mundo", font, 255, 255, 255, surface) --En este caso el color es blanco y lo muestra en la surface especificada</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.fontClose(font)</p>
+					<p id="function_desc">Cierra y libera la fuente de la variable especificada.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawPixel(x, y, color[, surface])</p>
+					<p id="function_desc">Dibuja un pixel en las coordenadas dadas, del color especificado por Screen.color, opcionalmente puede mostrarse en un surface.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawLine(x1, y1, x2, y2, color[, surface])</p>
+					<p id="function_desc">Dibuja una linea desde x1, y1, hasta x2, y2.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawBox(x, y, w, h, color[, surface])</p>
+					<p id="function_desc">Dibuja un cuadro sin relleno en las coordenadas dadas, con el ancho y altos especificados.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawfillBox(x, y, w, h, color[, surface])</p>
+					<p id="function_desc">Dibuja un cuadro relleno.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawCircle(x, y, r, color[, surface])</p>
+					<p id="function_desc">Dibuja un circulo sin relleno (r es el radio).</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawfillCircle(x, y, r, color[, surface])</p>
+					<p id="function_desc">Dibuja un circulo relleno.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawEllipse(x, y, w, h, color[, surface])</p>
+					<p id="function_desc">Dibuja un elipse sin relleno.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawfillEllipse(x, y, w, h, color[, surface])</p>
+					<p id="function_desc">Dibuja un elipse relleno.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawRound(x, y, w, h, r, color[, surface])</p>
+					<p id="function_desc">Dibuja un rectangulo redondeado relleno.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.drawfillRound(x, y, w, h, r, color[, surface])</p>
+					<p id="function_desc">Dibuja un rectangulo redondeado relleno (r es el radio de las esquinas).</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.imageLoadinOne(x, y, image_file)</p>
+					<p id="function_desc">Carga y muestra una imagen de los formatos soportados por SDL (entre ellos bmp, jpg, png o tiff). En el parentesis estan X, Y y la ruta de la imagen.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.imageLoad(image_file)</p>
+					<p id="function_desc">Carga una imagen de los formatos suportados por SDL y la almacena en una variable.</p>
+					<p id="function_sample">image = Screen.imageLoad("image.png") --Cargamos image.png y la almacenamos en la variable image</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.imageBlit(x, y, image)</p>
+					<p id="function_desc">Muestra la imagen cargada en las coordenadas dadas.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.imageFree(image)</p>
+					<p id="function_desc">Libera la imagen cargada.</p>
+				</div>
+			</div>
+			<div id="sound">
+				<a href="#index"><h2>Sound</h2></a>
+				<h6>Nota: lo que esta entre [ ] quiere decir que es opcional, pero estos simbolos no hay que ponerlos a la hora de usar la funcion</h6>
+				<div id="function">
+					<p id="function_name">Sound.wavLoadandPlay(wav_file, repeat)</p>
+					<p id="function_desc">Carga y reproduce un sonido wav (PCM Stereo 16bit). 0->No repite, 1->Repite infinitas veces</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavLoad(wav_file)</p>
+					<p id="function_desc">Carga un archivo wav y lo almacena en una variable (util para efectos sonoros en juegos).</p>
+					<p id="function_sample">sound = Sound.wavLoad("sound.wav") --Cargamos sound.wav y la almacenamos en la variable sound</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavPlay(sound, repeat)</p>
+					<p id="function_desc">Reproduce el sonido de especificado. 0->No repite, 1->Repite infinitas veces</p>
+					<p id="function_sample">sound = Sound.wavLoad("sound.wav") --Cargamos el sonido<br>Sound.wavPlay(sound, 0) --Reproducimos el sonido 1 vez</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavFree(sound)</p>
+					<p id="function_desc">Libera el sonido cargado.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavStop(sound)</p>
+					<p id="function_desc">Para la reproduccion y vuelve al principio.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavPauseResume(sound, pause)</p>
+					<p id="function_desc">Pausa o reanuda la reproduccion. 0 -> reanuda, 1-> pausa.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.wavVolume(sound, volume)</p>
+					<p id="function_desc">Volumen del sonido de 0 a 255.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3LoadandPlay(mp3_file, repeat)</p>
+					<p id="function_desc">Carga y reproduce un sonido mp3. 0->No repite, 1->Repite infinitas veces</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3Load(mp3_file)</p>
+					<p id="function_desc">Carga un archivo mp3 y lo almacena en una variable.</p>
+					<p id="function_sample">sound = Sound.mp3Load("sound.mp3") --Cargamos sound.mp3 y la almacenamos en la variable sound</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3Play(sound, repeat)</p>
+					<p id="function_desc">Reproduce el sonido de especificado. 0->No repite, 1->Repite infinitas veces</p>
+					<p id="function_sample">sound = Sound.mp3Load("sound.mp3") --Cargamos el sonido<br>Sound.mp3Play(sound, 1) --Reproducimos el sonido infinitas veces</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3Free(sound)</p>
+					<p id="function_desc">Libera el sonido cargado.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3Stop(sound)</p>
+					<p id="function_desc">Para la reproduccion y vuelve al principio.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3Volume(sound, volume)</p>
+					<p id="function_desc">Volumen del sonido de 0 a 255.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3PauseResume(sound, pause)</p>
+					<p id="function_desc">Pausa o reanuda la reproduccion. 0 -> reanuda, 1-> pausa.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.mp3isPlaying()</p>
+					<p id="function_desc">Retorna 1 si se esta reproduciendo un sonido mp3, 0 si no.</p>
+					<p id="function_sample">is_playing = Sound.mp3isPlaying()</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggLoadandPlay(ogg_file, timepos, repeat)</p>
+					<p id="function_desc">Carga y reproduce un sonido ogg, timepos es el segundo en el que quieres que empieze. 0->No repite, 1->Repite infinitas veces</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggLoad(ogg_file)</p>
+					<p id="function_desc">Carga un archivo ogg y lo almacena en una variable.</p>
+					<p id="function_sample">sound = Sound.oggLoad("sound.ogg") --Cargamos sound.ogg y la almacenamos en la variable sound</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggPlay(sound, timepos, repeat)</p>
+					<p id="function_desc">Reproduce el sonido de especificado, timepos es el segundo en el que empieza. 0->No repite, 1->Repite infinitas veces</p>
+					<p id="function_sample">sound = Sound.oggLoad("sound.ogg") --Cargamos el sonido<br>Sound.oggPlay(sound, 0, 0) --Reproducimos el sonido 1 vez</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggFree(sound)</p>
+					<p id="function_desc">Libera el sonido cargado.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggStop(sound)</p>
+					<p id="function_desc">Para la reproduccion y vuelve al principio.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggPauseResume(sound, pause)</p>
+					<p id="function_desc">Pausa o reanuda la reproduccion. 0 -> reanuda, 1-> pausa.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggVolume(sound, volume)</p>
+					<p id="function_desc">Volumen del sonido de 0 a 255.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggisPlaying()</p>
+					<p id="function_desc">Retorna 1 si se esta reproduciendo un sonido ogg, 2 si no.</p>
+					<p id="function_sample">is_playing = Sound.oggisPlaying()</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggGetTime()</p>
+					<p id="function_desc">Devuelve el segundo actual del sonido que se esta escuchando</p>
+					<p id="function_sample">actual_second = Sound.oggGetTime()</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Sound.oggSetTime(s)</p>
+					<p id="function_desc">Avanza la cancion hasta el segundo especificado</p>
+				</div>
+			</div>
+			<div id="Controls">
+				<a href="#index"><h2>Controls</h2></a>
+				<h6>Nota: lo que esta entre [ ] quiere decir que es opcional, pero estos simbolos no hay que ponerlos a la hora de usar la funcion</h6>
+				<div id="function">
+					<p id="function_name">Controls.read(wpad)</p>
+					<p id="function_desc">Examina los wpad en busca de eventos de botones y retorna el resultado. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4</p>
+					<p id="function_sample">wpad1 = Controls.read(0)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.readData(wpad)</p>
+					<p id="function_desc">Obtiene los datos del wiimote y retorna el resultado. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4</p>
+					<p id="function_sample">data1 = Controls.readData(0)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.pressA(wpad)</p>
+					<p id="function_desc">Comprueba si se ha pulsado el boton A en el wpad especificado. A continuacion una lista de todas las funcions de wpad</p>
+					<div id="Spoiler">Spoiler: <a href="#Controls" onclick="spoiler('spoiler_buttons')">Mostrar/Ocultar</a>
+						<div id="spoiler_buttons" style="display: none;">
+							<p id="function_name">Controls.pressA(wpad) --Comprueba cuando se pulsa el boton</p>
+							<p id="function_name">Controls.pressB(wpad)</p>
+							<p id="function_name">Controls.press1(wpad)</p>
+							<p id="function_name">Controls.press2(wpad)</p>
+							<p id="function_name">Controls.pressPlus(wpad)</p>
+							<p id="function_name">Controls.pressMinus(wpad)</p>
+							<p id="function_name">Controls.pressUp(wpad)</p>
+							<p id="function_name">Controls.pressDown(wpad)</p>
+							<p id="function_name">Controls.pressLeft(wpad)</p>
+							<p id="function_name">Controls.pressRight(wpad)</p>
+							<p id="function_name">Controls.pressHome(wpad)</p>
+							<p id="function_name">Controls.pressNunC(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.pressNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.releaseA(wpad) --Comprueba cuando se suelta el boton</p>
+							<p id="function_name">Controls.releaseB(wpad)</p>
+							<p id="function_name">Controls.release1(wpad)</p>
+							<p id="function_name">Controls.release2(wpad)</p>
+							<p id="function_name">Controls.releasePlus(wpad)</p>
+							<p id="function_name">Controls.releaseMinus(wpad)</p>
+							<p id="function_name">Controls.releaseUp(wpad)</p>
+							<p id="function_name">Controls.releaseDown(wpad)</p>
+							<p id="function_name">Controls.releaseLeft(wpad)</p>
+							<p id="function_name">Controls.releaseRight(wpad)</p>
+							<p id="function_name">Controls.releaseHome(wpad)</p>
+							<p id="function_name">Controls.releaseNunC(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.releaseNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.heldA(wpad) --Retorna 1 mientras el boton este pulsado</p>
+							<p id="function_name">Controls.heldB(wpad)</p>
+							<p id="function_name">Controls.held1(wpad)</p>
+							<p id="function_name">Controls.held2(wpad)</p>
+							<p id="function_name">Controls.heldPlus(wpad)</p>
+							<p id="function_name">Controls.heldMinus(wpad)</p>
+							<p id="function_name">Controls.heldUp(wpad)</p>
+							<p id="function_name">Controls.heldDown(wpad)</p>
+							<p id="function_name">Controls.heldLeft(wpad)</p>
+							<p id="function_name">Controls.heldRight(wpad)</p>
+							<p id="function_name">Controls.heldHome(wpad)</p>
+							<p id="function_name">Controls.heldNunC(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.heldNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+						</div>
+					</div>
+					<p id="function_sample">wpad1 = Controls.read(0) --Examinamos el wiimote 1<br>if Controls.pressA(Wpad1) == 1 then --Comprobamos si se ha pulsado A en el wiimote 1<br>Screen.print(1, 1, "Estas pulsando A") --Mostramos un texto<br>end</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.IRx(data)</p>
+					<p id="function_desc">Comprueba si se ha pulsado el boton A en el wpad especificado. A continuacion una lista de todas las funcions de wpad</p>
+					<div id="Spoiler">Spoiler: <a href="#Controls" onclick="spoiler('spoiler_data')">Mostrar/Ocultar</a>
+						<div id="spoiler_data" style="display: none;">
+							<p id="function_name">Controls.IRx(data) --Obtiene la coordenada X del sensor IR del wiimote</p>
+							<p id="function_name">Controls.IRy(wpad)</p>
+							<p id="function_name">Controls.IRrawx(wpad)</p>
+							<p id="function_name">Controls.IRrawy(wpad)</p>
+							<p id="function_name">Controls.IRsmoothx(wpad)</p> 
+							<p id="function_name">Controls.IRsmoothy(wpad)</p>
+							<p id="function_name">Controls.IRangle(wpad)</p>
+							<p id="function_name">Controls.accelx(wpad) --Obtiene la aceleracion horizontal del sensor de aceleracion del wiimote</p>
+							<p id="function_name">Controls.accely(wpad)</p>
+							<p id="function_name">Controls.accelz(wpad)</p>
+							<p id="function_name">Controls.pressHome(wpad)</p>
+							<p id="function_name">Controls.Gforcex(wpad) --Obtiene la fuerza horizontal del wiimote</p>
+							<p id="function_name">Controls.Gforcey(wpad)</p>
+							<p id="function_name">Controls.orientRoll(wpad)--Obtiene la orientacion del wiimote</p>
+							<p id="function_name">Controls.orientPitch(wpad)</p>
+							<p id="function_name">Controls.orientYaw(wpad)</p>
+							<p id="function_name">Controls.nunAccelx(wpad) --Obtiene datos del nunchuck</p>
+							<p id="function_name">Controls.nunAccely(wpad)</p>
+							<p id="function_name">Controls.nunAccelz(wpad)</p>
+							<p id="function_name">Controls.nunGforcex(wpad)</p>
+							<p id="function_name">Controls.nunGforcey(wpad)</p>
+							<p id="function_name">Controls.nunOrientRoll(wpad)</p>
+							<p id="function_name">Controls.nunorientPitch(wpad)</p>
+							<p id="function_name">Controls.nunorientYaw(wpad) </p>
+							<p id="function_name">Controls.nunJoyPosX(wpad)--Obtiene datos del joyStick del nunchuck</p>
+							<p id="function_name">Controls.nunJoyPosy(wpad)</p>
+							<p id="function_name">Controls.nunJoyCenterx(wpad)</p>
+							<p id="function_name">Controls.nunJoyCentery(wpad)</p>
+							<p id="function_name">Controls.nunJoyMinx(wpad)</p>
+							<p id="function_name">Controls.nunJoyMiny(wpad)</p>
+							<p id="function_name">Controls.nunJoyMaxx(wpad)</p>
+							<p id="function_name">Controls.nunJoyMaxy(wpad)</p>
+							<p id="function_name">Controls.nunJoyAng(wpad)</p>
+							<p id="function_name">Controls.nunJoyMag(wpad)</p>
+						</div>
+					</div>
+					<p id="function_sample">data1 = Controls.readData(0) --Examinamos el wiimote 1<br>Screen.print(1, 1, "Coordenada X: "..Controls.IRx(data1)) --Obtenemos el dato y lo mostramos</p>
+				</div>
+			</div>
+			<div id="System">
+				<a href="#index"><h2>System</h2></a>
+				<h6>Nota: lo que esta entre [ ] quiere decir que es opcional, pero estos simbolos no hay que ponerlos a la hora de usar la funcion</h6>
+				<div id="function">
+					<p id="function_name">System.sleep(s)</p> 
+					<p id="function_desc">Duerme la wii durante los segundos indicados</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.exitHBC()</p> 
+					<p id="function_desc">Sale al HBC</p>
+				</div><div id="function">
+					<p id="function_name">System.currentDir([path]) </p>
+					<p id="function_desc">En el caso rellenar el campo path con una ruta ("apps" por ejemplo) establece el directorio actual en esa ruta (cuidado puede dejar de leer el script), en caso de dejarlo vacio devuelve la ruta de tu boot.dol</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.createDir(path) </p>
+					<p id="function_desc">Crea un directorio</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.removeFile(file) </p>
+					<p id="function_desc">Elimina un archivo</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.removeDir(path) </p>
+					<p id="function_desc">Elimina un directorio</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.renameFile(file, file_new) </p>
+					<p id="function_desc">Renombra un archivo</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.moveFile(file, path_file_new) </p>
+					<p id="function_desc">Mueve un archivo</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.checkFile(file) </p>
+					<p id="function_desc">Comprueba si existe un archivo, retorna 1 si existe, 0 si no</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.getDir([1]) </p>
+					<p id="function_desc">En caso de estar vacio el parentesis recuperara la lista de archivos, en caso de tener un valor (numerico) entrara e la carpeta correspoendiente a ese valor (para ejemplo mirar el script.lua)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.getDName(1) </p>
+					<p id="function_desc">Obtiene el nombre del archivo o carpeta correspondiente con el numero entre parentesis (para ejemplo mirar el script.lua)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.getDType(1) </p>
+					<p id="function_desc">Obtiene el el tipo, es decir, si es archivo (devuelve 0) o carpeta (devuelve 1) (para ejemplo mirar el script.lua)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.isDExt(ext, 1) </p>
+					<p id="function_desc">Obtiene la extension del archivo correspondiente con el numero y la compara con la especificada entre parentesis, devuelve 1 si el archivo tiene esa extension y 0 si no la tiene</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.getMaxDir() </p>
+					<p id="function_desc">Devuelve el numero de resultados obtenidos por System.getDir() + 1  (para ejemplo mirar el script.lua)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.getPathDir([1]) </p>
+					<p id="function_desc">En el caso de que halla un numero devuelve la ruta completa del archivo o carpeta correspondiente, en el caso de que este vacio devuelve el directorio en el que estas actualmente</p>
+				</div>
+			</div>
+			<div id="Timer">
+				<a href="#index"><h2>Timer</h2></a>
+				<h6>Nota: lo que esta entre [ ] quiere decir que es opcional, pero estos simbolos no hay que ponerlos a la hora de usar la funcion</h6>
+				<div id="function">
+					<p id="function_name">Timer.new([0])</p>
+					<p id="function_desc">Crea el timer, entre parentesis el tiempo de inicio</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Timer.start(timer)</p>
+					<p id="function_desc">Inicia el timer</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Timer.time(timer)</p>
+					<p id="function_desc">Obtiene el tiempo del timer</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Timer.stop(timer)>/p>
+					<p id="function_desc">Detiene el timer</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Timer.reset(timer[, 0])</p>
+					<p id="function_desc">Reinicia el timer, entre parentesis la variable del timer y opcionalmente el tiempo de inicio</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Timer.free(timer)</p>
+					<p id="function_desc">Libera el timer</p>
+				</div>
+(SE USAN IGUAL QUE LOS DE Lua HM7 de PSP, SI NECESITAIS DOCUMENTACION: <a href="http://pipagerardo.fortunecity.es/Tutorial_LUA_PSP_pipagerardo.html#FUNCIONES_DE_CONTROL_DE_TIEMPO">http://pipagerardo.fortunecity.es/Tutorial_LUA_PSP_pipagerardo.html#FUNCIONES_DE_CONTROL_DE_TIEMPO)</a>
+			</div>
+		</div>
+	</body>
+</html>
