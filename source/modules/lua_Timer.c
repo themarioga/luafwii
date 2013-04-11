@@ -104,7 +104,7 @@ static int lua_timerFree(lua_State *l) {
 	return 0;
 }
 
-static const luaL_reg Timers[] = {
+static const luaL_Reg Timers[] = {
 	{"new", lua_timerNew},
 	{"start", lua_timerStart},
 	{"time", lua_timerTime},

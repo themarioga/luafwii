@@ -151,7 +151,7 @@ ControlsConv(padhome, BUTTON_HOME, pad);
 ControlsConv(prehome, BUTTON_HOME, pre);
 ControlsConv(relhome, BUTTON_HOME, rel);
 
-static const luaL_reg Controls[] = {
+static const luaL_Reg Controls[] = {
 	{"read", Controls_read},
 	{"readData", Data_read},
 	{"IRx", Controls_IRx},

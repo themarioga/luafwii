@@ -10,7 +10,7 @@ extern int luaopen_Timer(lua_State *l);
 
 int main(int argc, char *argv[]) {
 	InitSDL();
-	l = lua_open();
+	l = luaL_newstate();
 	luaL_openlibs(l);
 	luaopen_Screen(l);
 	luaopen_System(l);

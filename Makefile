@@ -35,7 +35,7 @@ LDFLAGS	=	-g $(MACHDEP) -mrvl -Wl,-Map,$(notdir $@).map
 #---------------------------------------------------------------------------------
 LIBS	:=	-llua -loggplayer -lmodplay -lasnd -laesnd -lmad -lwavplayer -lSDL_draw -lSDL_ttf -lSDL_gfx -lSDL_image \
                 -lSDL -ljpeg -lpng -lfreetype -lvorbisidec \
-                -lz -lfat -lwiiuse -lbte -logc -lm -lwiikeyboard -lbrowser -lstdc++
+                -lz -lfat -lwiiuse -lbte -logc -lm -lwiikeyboard -lfilebrowser -lstdc++
 				
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

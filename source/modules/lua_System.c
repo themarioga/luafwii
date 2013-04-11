@@ -141,7 +141,7 @@ static int lua_pathDir (lua_State *L) {
     return 1;
 }
 
-static const struct luaL_reg System[] = {
+static const struct luaL_Reg System[] = {
 	{"millisecs",lua_millisecs},
 	{"sleep",lua_systemSleep},
 	{"getDir",lua_getdir},

@@ -6,6 +6,6 @@ set DEVKITPRO=/c/devkitPro
 cls
 IF EXIST *.dol rm *.dol
 IF EXIST *.elf rm *.elf
-make
+make | more
 pause
 goto makea

@@ -126,13 +126,13 @@ static int lua_soundOggLoad(lua_State *l) {
 }
 static int lua_soundOggPlay(lua_State *l) {
 	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
-	fileStruct mp3 = *toMp3Ogg(l, 1);
-	if (!mp3.buffer) {
+	fileStruct ogg = *toMp3Ogg(l, 1);
+	if (!ogg.buffer) {
 		return luaL_error(l, "could not play");
 	}
 	int timepos = luaL_checkint(l, 2);
 	int repeat = luaL_checkint(l, 3);
-	oggPlayBuffer(mp3.buffer, mp3.size, timepos, repeat);
+	PlayOgg(ogg.buffer, ogg.size, timepos, repeat);
 	return 1;
 }
 static int lua_soundOggFree(lua_State *l) {
@@ -145,42 +145,43 @@ if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
 	const char *file = luaL_checkstring(l, 1);
 	int timepos = luaL_checkint(l, 2);
 	int repeat = luaL_checkint(l, 3);
-	if (oggStatus() != 1) {
-		oggPlayFile(file, timepos, repeat);
+	if (StatusOgg() != 1) {
+		fileStruct ogg = fileLoad(file);
+		PlayOgg(ogg.buffer, ogg.size, timepos, repeat);
 	}
 	return 1;
 }
 static int lua_soundOggStop(lua_State *l) {
 	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
-	oggStop();
+	StopOgg();
 	return 1;
 }
 static int lua_soundOggisPlaying(lua_State *l) {
 	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
-	lua_pushnumber(l, oggStatus());
+	lua_pushnumber(l, StatusOgg());
 	return 1;
 }
 static int lua_soundOggPauseResume(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	int pause = luaL_checkint(l, 1);
-	oggPause(pause);
+	PauseOgg(pause);
 	return 1;
 }
 static int lua_soundOggVolume(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	int vol = luaL_checkint(l, 1);
-	oggSetVolume(vol);
+	SetVolumeOgg(vol);
 	return 1;
 }
 static int lua_soundOggGetTime(lua_State *l) {
 	if (lua_gettop(l) != 0) return luaL_error(l, "wrong number of arguments");
-	lua_pushnumber(l, oggGetTime());
+	lua_pushnumber(l, GetTimeOgg());
 	return 1;
 }
 static int lua_soundOggSetTime(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	s32 tim = luaL_checkint(l, 1);
-	oggSetTime(tim);
+	SetTimeOgg(tim);
 	return 1;
 }
 
@@ -311,7 +312,7 @@ static int lua_soundModPauseResume(lua_State *l) {
 	}
 	return 1;
 }*/
-static const struct luaL_reg Sound[] = {
+static const struct luaL_Reg Sound[] = {
   {"wavLoad",lua_soundWavLoad}, 
   {"mp3Load",lua_soundMp3Load},
   {"oggLoad",lua_soundOggLoad}, //Nuevo

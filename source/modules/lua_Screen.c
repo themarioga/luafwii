@@ -349,7 +349,7 @@ static int lua_imageLoadinOne(lua_State *l) {
 	return 1;
 }
 
-static const struct luaL_reg Screen[] = {
+static const struct luaL_Reg Screen[] = {
   {"surfaceCreate",lua_screenCreateSurface}, //Nuevo
   {"surfaceBlit",lua_screenBlitSurface}, //Nuevo
   {"surfaceFree",lua_screenFreeSurface}, //Nuevo
