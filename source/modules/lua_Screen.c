@@ -1,4 +1,5 @@
 #include "../functions.h"
+#include <SDL/SDL_rotozoom.h>
 
 toPush(Image, SDL_Surface*)
 toPush(Font, TTF_Font*)
@@ -14,6 +15,25 @@ static int lua_screenCreateSurface(lua_State *l) {
 	}
 	SDL_Surface** buffer = pushImage(l);
 	*buffer = image;
+	return 1;
+}
+static int lua_screenRotateSurface(lua_State *l) { //NEW
+	if (lua_gettop(l) != 2) return luaL_error(l, "wrong number of arguments");
+	SDL_Surface *src = *toImage(l, 1);	
+	double degrees = luaL_checknumber(l, 2);
+	SDL_Surface *ret = rotozoomSurface(src, (double) degrees, 1, 1);
+	SDL_Surface** buffer = pushImage(l);
+	*buffer = ret;
+	return 1;
+}
+static int lua_screenScaleSurface(lua_State *l) { //NEW
+	if (lua_gettop(l) != 2) return luaL_error(l, "wrong number of arguments");
+	SDL_Surface *src = *toImage(l, 1);	
+	double scale = luaL_checkint(l, 2);
+	if (!scale) scale = 1;
+	SDL_Surface *ret = rotozoomSurface(src, 0.0, (double) scale, 1);
+	SDL_Surface** buffer = pushImage(l);
+	*buffer = ret;
 	return 1;
 }
 static int lua_screenBlitSurface(lua_State *l) {
@@ -278,7 +298,7 @@ static int lua_screenFontWrite(lua_State *l) {
 	}
 	return 1;
 }
-
+//Image
 static int lua_imageLoad(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *file = luaL_checkstring(l, 1);
@@ -350,9 +370,11 @@ static int lua_imageLoadinOne(lua_State *l) {
 }
 
 static const struct luaL_Reg Screen[] = {
-  {"surfaceCreate",lua_screenCreateSurface}, //Nuevo
-  {"surfaceBlit",lua_screenBlitSurface}, //Nuevo
-  {"surfaceFree",lua_screenFreeSurface}, //Nuevo
+  {"surfaceCreate",lua_screenCreateSurface},
+  {"surfaceBlit",lua_screenBlitSurface}, 
+  {"surfaceFree",lua_screenFreeSurface},
+  {"surfaceRotate",lua_screenRotateSurface}, //Nuevo
+  {"surfaceScale",lua_screenScaleSurface}, //Nuevo
   {"imageLoadinOne",lua_imageLoadinOne}, 
   {"imageLoad",lua_imageLoad}, 
   {"imageBlit",lua_imageBlit},
@@ -378,9 +400,12 @@ static const struct luaL_Reg Screen[] = {
   {"drawLine",lua_screenLine},
   {NULL, NULL}
 };
-
+int luaregister_Screen (lua_State * l) {
+	luaL_newlib(l, Screen);
+	return 1;
+}
 int luaopen_Screen(lua_State *l) {
-	luaL_register(l, "Screen", Screen);
+	luaL_requiref(l, "Screen", luaregister_Screen, 1);
     return 1;
 }
 

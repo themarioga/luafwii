@@ -31,6 +31,33 @@ static int Data_read(lua_State *l) {
 	*CD = cd;
 	return 1;
 }
+static int Controls_setMotionPlus(lua_State *l) {
+	if(lua_gettop(l) != 2) return luaL_error(l, "Wrong number of elements.");
+	int wpad = luaL_checkint(l, 1);
+	int status = luaL_checkint(l, 2);
+	WPAD_SetMotionPlus(wpad, status);
+	return 1;
+}
+static int Controls_setRumble(lua_State *l) {
+	if(lua_gettop(l) != 2) return luaL_error(l, "Wrong number of elements.");
+	int wpad = luaL_checkint(l, 1);
+	int status = luaL_checkint(l, 2);
+	WPAD_Rumble(wpad, status);
+	return 1;
+}
+static int Controls_disconectWpad(lua_State *l) {
+	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
+	int wpad = luaL_checkint(l, 1);
+	WPAD_Disconnect(wpad);
+	return 1;
+}
+static int Controls_getBattery(lua_State *l) {
+	if(lua_gettop(l) != 1) return luaL_error(l, "Wrong number of elements.");
+	int wpad = luaL_checkint(l, 1);
+	int res = WPAD_BatteryLevel(wpad);
+	lua_pushnumber(l, res);
+	return 1;
+}
 
 //NUNCHUCK JOYSTICK
 #define CNJDataConv(NAMEFUN, TYPE, DATA) \
@@ -117,6 +144,7 @@ ControlsConv(relNunC, NUNCHUK_BUTTON_C, rel);
 ControlsConv(padNunZ, NUNCHUK_BUTTON_Z, pad);
 ControlsConv(preNunZ, NUNCHUK_BUTTON_Z, pre);
 ControlsConv(relNunZ, NUNCHUK_BUTTON_Z, rel);
+
 ControlsConv(padA, BUTTON_A, pad);
 ControlsConv(preA, BUTTON_A, pre);
 ControlsConv(relA, BUTTON_A, rel);
@@ -151,9 +179,60 @@ ControlsConv(padhome, BUTTON_HOME, pad);
 ControlsConv(prehome, BUTTON_HOME, pre);
 ControlsConv(relhome, BUTTON_HOME, rel);
 
+ControlsConv(padclassicup, CLASSIC_BUTTON_UP, pad);
+ControlsConv(preclassicup, CLASSIC_BUTTON_UP, pre);
+ControlsConv(relclassicup, CLASSIC_BUTTON_UP, rel);
+ControlsConv(padclassicdown, CLASSIC_BUTTON_DOWN, pad);
+ControlsConv(preclassicdown, CLASSIC_BUTTON_DOWN, pre);
+ControlsConv(relclassicdown, CLASSIC_BUTTON_DOWN, rel);
+ControlsConv(padclassicleft, CLASSIC_BUTTON_LEFT, pad);
+ControlsConv(preclassicleft, CLASSIC_BUTTON_LEFT, pre);
+ControlsConv(relclassicleft, CLASSIC_BUTTON_LEFT, rel);
+ControlsConv(padclassicright, CLASSIC_BUTTON_RIGHT, pad);
+ControlsConv(preclassicright, CLASSIC_BUTTON_RIGHT, pre);
+ControlsConv(relclassicright, CLASSIC_BUTTON_RIGHT, rel);
+ControlsConv(padclassicx, CLASSIC_BUTTON_X, pad);
+ControlsConv(preclassicx, CLASSIC_BUTTON_X, pre);
+ControlsConv(relclassicx, CLASSIC_BUTTON_X, rel);
+ControlsConv(padclassica, CLASSIC_BUTTON_A, pad);
+ControlsConv(preclassica, CLASSIC_BUTTON_A, pre);
+ControlsConv(relclassica, CLASSIC_BUTTON_A, rel);
+ControlsConv(padclassicy, CLASSIC_BUTTON_Y, pad);
+ControlsConv(preclassicy, CLASSIC_BUTTON_Y, pre);
+ControlsConv(relclassicy, CLASSIC_BUTTON_Y, rel);
+ControlsConv(padclassicb, CLASSIC_BUTTON_B, pad);
+ControlsConv(preclassicb, CLASSIC_BUTTON_B, pre);
+ControlsConv(relclassicb, CLASSIC_BUTTON_B, rel);
+ControlsConv(padclassiczr, CLASSIC_BUTTON_ZR, pad);
+ControlsConv(preclassiczr, CLASSIC_BUTTON_ZR, pre);
+ControlsConv(relclassiczr, CLASSIC_BUTTON_ZR, rel);
+ControlsConv(padclassiczl, CLASSIC_BUTTON_ZL, pad);
+ControlsConv(preclassiczl, CLASSIC_BUTTON_ZL, pre);
+ControlsConv(relclassiczl, CLASSIC_BUTTON_ZL, rel);
+ControlsConv(padclassicfullr, CLASSIC_BUTTON_FULL_R, pad);
+ControlsConv(preclassicfullr, CLASSIC_BUTTON_FULL_R, pre);
+ControlsConv(relclassicfullr, CLASSIC_BUTTON_FULL_R, rel);
+ControlsConv(padclassicfulll, CLASSIC_BUTTON_FULL_L, pad);
+ControlsConv(preclassicfulll, CLASSIC_BUTTON_FULL_L, pre);
+ControlsConv(relclassicfulll, CLASSIC_BUTTON_FULL_L, rel);
+ControlsConv(padclassicplus, CLASSIC_BUTTON_PLUS, pad);
+ControlsConv(preclassicplus, CLASSIC_BUTTON_PLUS, pre);
+ControlsConv(relclassicplus, CLASSIC_BUTTON_PLUS, rel);
+ControlsConv(padclassicminus, CLASSIC_BUTTON_MINUS, pad);
+ControlsConv(preclassicminus, CLASSIC_BUTTON_MINUS, pre);
+ControlsConv(relclassicminus, CLASSIC_BUTTON_MINUS, rel);
+ControlsConv(padclassichome, CLASSIC_BUTTON_HOME, pad);
+ControlsConv(preclassichome, CLASSIC_BUTTON_HOME, pre);
+ControlsConv(relclassichome, CLASSIC_BUTTON_HOME, rel);
+
 static const luaL_Reg Controls[] = {
 	{"read", Controls_read},
 	{"readData", Data_read},
+	{"setMotionPlus", Controls_setMotionPlus}, //NEW
+	{"setRumble", Controls_setRumble},//NEW
+	{"getBatteryLevel", Controls_getBattery},//NEW
+	{"disconectWpad", Controls_disconectWpad},//NEW
+	
 	{"IRx", Controls_IRx},
 	{"IRy", Controls_IRy},
 	{"IRrawx", Controls_IRax},
@@ -187,6 +266,7 @@ static const luaL_Reg Controls[] = {
 	{"nunJoyMaxy", Controls_nunJoyMaxy},
 	{"nunJoyAng", Controls_nunJoyAng},
 	{"nunJoyMag", Controls_nunJoyMag},
+	
 	{"pressA", Controls_padA },
 	{"heldA", Controls_preA },
 	{"releaseA", Controls_relA },
@@ -220,18 +300,71 @@ static const luaL_Reg Controls[] = {
 	{"pressHome", Controls_padhome },
 	{"heldHome", Controls_prehome },
 	{"releaseHome", Controls_relhome },
+	
 	{"pressNunC", Controls_padNunC },
 	{"heldNunC", Controls_preNunC },
 	{"releaseNunC", Controls_relNunC },
 	{"pressNunZ", Controls_padNunZ },
 	{"heldNunZ", Controls_preNunZ },
 	{"releaseNunZ", Controls_relNunZ },
+	//NEW
+	{"pressClassicUp", Controls_padclassicup },
+	{"heldClassicUp", Controls_preclassicup },
+	{"releaseClassicUp", Controls_relclassicup },
+	{"pressClassicDown", Controls_padclassicdown },
+	{"heldClassicDown", Controls_preclassicdown },
+	{"releaseClassicDown", Controls_relclassicdown },
+	{"pressClassicLeft", Controls_padclassicleft },
+	{"heldClassicLeft", Controls_preclassicleft },
+	{"releaseClassicLeft", Controls_relclassicleft },
+	{"pressClassicRight", Controls_padclassicright },
+	{"heldClassicRight", Controls_preclassicright },
+	{"releaseClassicRight", Controls_relclassicright },
+	{"pressClassicX", Controls_padclassicx },
+	{"heldClassicX", Controls_preclassicx },
+	{"releaseClassicX", Controls_relclassicx },
+	{"pressClassicA", Controls_padclassica },
+	{"heldClassicA", Controls_preclassica },
+	{"releaseClassicA", Controls_relclassica },
+	{"pressClassicY", Controls_padclassicy },
+	{"heldClassicY", Controls_preclassicy },
+	{"releaseClassicY", Controls_relclassicy },
+	{"pressClassicB", Controls_padclassicb },
+	{"heldClassicB", Controls_preclassicb },
+	{"releaseClassicB", Controls_relclassicb },
+	{"pressClassicZR", Controls_padclassiczr },
+	{"heldClassicZR", Controls_preclassiczr },
+	{"releaseClassicZR", Controls_relclassiczr },
+	{"pressClassicZL", Controls_padclassiczl },
+	{"heldClassicZL", Controls_preclassiczl },
+	{"releaseClassicZL", Controls_relclassiczl },
+	{"pressClassicFullR", Controls_padclassicfullr },
+	{"heldClassicFullR", Controls_preclassicfullr },
+	{"releaseClassicFullR", Controls_relclassicfullr },
+	{"pressClassicFullL", Controls_padclassicfulll },
+	{"heldClassicFullL", Controls_preclassicfulll },
+	{"releaseClassicFullL", Controls_relclassicfulll },
+	{"pressClassicPlus", Controls_padclassicplus },
+	{"heldClassicPlus", Controls_preclassicplus },
+	{"releaseClassicPlus", Controls_relclassicplus },
+	{"pressClassicMinus", Controls_padclassicminus },
+	{"heldClassicMinus", Controls_preclassicminus },
+	{"releaseClassicMinus", Controls_relclassicminus },
+	{"pressClassicHome", Controls_padclassichome },
+	{"heldClassicHome", Controls_preclassichome },
+	{"releaseClassicHome", Controls_relclassichome },
+	
 	/**{"kbdRead", Controls_kbdread },
 	{"kbdIsConnected", Controls_kbdisconnected },*/
   {NULL, NULL}
 };
 
-int luaopen_Controls(lua_State *l) {
-	   luaL_register(l, "Controls", Controls);
-       return 1;
+int luaregister_Controls (lua_State * l) {
+	luaL_newlib(l, Controls);
+	return 1;
 }
+int luaopen_Controls(lua_State *l) {
+	luaL_requiref(l, "Controls", luaregister_Controls, 1);
+    return 1;
+}
+

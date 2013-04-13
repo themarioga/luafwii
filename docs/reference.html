@@ -118,8 +118,15 @@
 			</div>
 			<div id="Changelog">
 				<a href="#index"><h2>Changelog</h2></a>
+				<b>1.2</b><br>
+				Actualizado a Lua 5.2.2<br>
+				Compilado con la ultima version de devKitPPC, LibOGC, SDL y el resto de librerias usadas<br>
+				Se añaden las funciones writeFile, readFile y createFile a System<br>
+				Se añaden las funciones setMotionPlus, setRumble, getBatteryLevel y disconnectWpad<br>
+				Se añade soporte al mando clasico de la Wii<br>
+				Se añaden funciones de rotacion, reescalado y redimensionado a Screen<br>
 				<b>1.1</b><br>
-				Se añaden las funciones OggLoad, oggPlay, oggFree y oggisPlaying, y el argumento repeat en wavPlay
+				Se añaden las funciones OggLoad, oggPlay, oggFree y oggisPlaying, y el argumento repeat en wavPlay<br>
 				Permite mostrar parte de la imagen (para paletas de imagenes)<br>
 				Se añaden surfaceCreate, surfaceBlit y surfaceFree (Parecido a imageCreateEmpty de psp, crea un surface donde puedes mostrar texto e imagenes, y luego copiarlo a la pantalla)<br>
 				Posibilidad de mostrar texto e imagenes en surface o pantalla<br>
@@ -225,6 +232,16 @@
 					<p id="function_name">Screen.surfaceBlit(x, y, surface)</p>
 					<p id="function_desc">Copia un surface a pantalla.</p>
 					<p id="function_sample">surface = Screen.surfaceCreate() --Crea una surface<br>Screen.surfaceBlit(1, 1, surface) --Copia la surface a pantalla en el pixel 1, 1</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.surfaceRotate(surface, degrees)</p>
+					<p id="function_desc">Rota un surface o imagen</p>
+					<p id="function_sample">surface = Screen.surfaceCreate() --Crea una surface<br>surface = Screen.surfaceRotate(surface, 10) --Rota 10º la surface<br>Screen.surfaceBlit(1, 1, surface) --Copia la surface a pantalla en el pixel 1, 1</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Screen.surfaceScale(surface, scale)</p>
+					<p id="function_desc">Reescala un surface o imagen</p>
+					<p id="function_sample">surface = Screen.surfaceCreate() --Crea una surface<br>surface = Screen.surfaceScale(surface, 2) --Reescala la imagen a x2<br>Screen.surfaceBlit(1, 1, surface) --Copia la surface a pantalla en el pixel 1, 1</p>
 				</div>
 				<div id="function">
 					<p id="function_name">Screen.surfaceFree(surface)</p>
@@ -443,6 +460,23 @@
 					<p id="function_sample">data1 = Controls.readData(0)</p>
 				</div>
 				<div id="function">
+					<p id="function_name">Controls.setMotionPlus(wpad, status)</p>
+					<p id="function_desc">Activa o desactiva el WiiMotionPlus si esta presente. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4. El estado es 0 apagado, 1 encendido.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.setRumble(wpad)</p>
+					<p id="function_desc">Activa o desactiva la vibracion del mando. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4. El estado es 0 apagado, 1 encendido. <h6>Consume mucha bateria</h6></p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.getBatteryLevel(wpad)</p>
+					<p id="function_desc">Obtiene el nivel de bateria de un mando. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4.</p>
+					<p id="function_sample">lvl = Controls.getBatteryLevel(1)</p>
+				</div>
+				<div id="function">
+					<p id="function_name">Controls.disconnectWpad(wpad)</p>
+					<p id="function_desc">Apaga un mando. Los wpad son 0->Wiimote 1, 1->Wiimote 2, 2->Wiimote 3, 3->Wiimote 4.</p>
+				</div>
+				<div id="function">
 					<p id="function_name">Controls.pressA(wpad)</p>
 					<p id="function_desc">Comprueba si se ha pulsado el boton A en el wpad especificado. A continuacion una lista de todas las funcions de wpad</p>
 					<div id="Spoiler">Spoiler: <a href="#Controls" onclick="spoiler('spoiler_buttons')">Mostrar/Ocultar</a>
@@ -460,6 +494,21 @@
 							<p id="function_name">Controls.pressHome(wpad)</p>
 							<p id="function_name">Controls.pressNunC(wpad) --Requiere tener conectado el nunchuck</p>
 							<p id="function_name">Controls.pressNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.pressClassicUp(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicDown(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicLeft(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicRight(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicX(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicY(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicA(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicB(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicZR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicZL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicFullR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicFullL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicPlus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicMinus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.pressClassicHome(wpad) --Requiere tener el mando clasico conectado</p>
 							<p id="function_name">Controls.releaseA(wpad) --Comprueba cuando se suelta el boton</p>
 							<p id="function_name">Controls.releaseB(wpad)</p>
 							<p id="function_name">Controls.release1(wpad)</p>
@@ -473,6 +522,21 @@
 							<p id="function_name">Controls.releaseHome(wpad)</p>
 							<p id="function_name">Controls.releaseNunC(wpad) --Requiere tener conectado el nunchuck</p>
 							<p id="function_name">Controls.releaseNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.releaseClassicUp(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicDown(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicLeft(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicRight(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicX(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicY(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicA(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicB(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicZR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicZL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicFullR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicFullL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicPlus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicMinus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.releaseClassicHome(wpad) --Requiere tener el mando clasico conectado</p>
 							<p id="function_name">Controls.heldA(wpad) --Retorna 1 mientras el boton este pulsado</p>
 							<p id="function_name">Controls.heldB(wpad)</p>
 							<p id="function_name">Controls.held1(wpad)</p>
@@ -486,6 +550,21 @@
 							<p id="function_name">Controls.heldHome(wpad)</p>
 							<p id="function_name">Controls.heldNunC(wpad) --Requiere tener conectado el nunchuck</p>
 							<p id="function_name">Controls.heldNunZ(wpad) --Requiere tener conectado el nunchuck</p>
+							<p id="function_name">Controls.heldClassicUp(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicDown(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicLeft(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicRight(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicX(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicY(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicA(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicB(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicZR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicZL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicFullR(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicFullL(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicPlus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicMinus(wpad) --Requiere tener el mando clasico conectado</p>
+							<p id="function_name">Controls.heldClassicHome(wpad) --Requiere tener el mando clasico conectado</p>
 						</div>
 					</div>
 					<p id="function_sample">wpad1 = Controls.read(0) --Examinamos el wiimote 1<br>if Controls.pressA(Wpad1) == 1 then --Comprobamos si se ha pulsado A en el wiimote 1<br>Screen.print(1, 1, "Estas pulsando A") --Mostramos un texto<br>end</p>
@@ -571,6 +650,18 @@
 				<div id="function">
 					<p id="function_name">System.checkFile(file) </p>
 					<p id="function_desc">Comprueba si existe un archivo, retorna 1 si existe, 0 si no</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.createFile(file) </p>
+					<p id="function_desc">Crea un archivo o lo sobreescribe si ya existe.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.readFile(file) </p>
+					<p id="function_desc">Lee un archivo.</p>
+				</div>
+				<div id="function">
+					<p id="function_name">System.writeFile(file, content, replace) </p>
+					<p id="function_desc">Escribe un archivo. Replace es 0 si queremos escribir al final del archivo y 1 si queremos reescribirlo</p>
 				</div>
 				<div id="function">
 					<p id="function_name">System.getDir([1]) </p>

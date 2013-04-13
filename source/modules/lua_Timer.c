@@ -98,7 +98,6 @@ static int lua_timerReset(lua_State *l) {
 	return 1;
 }
 
-
 static int lua_timerFree(lua_State *l) {
 	free(*toTimer(l, 1));
 	return 0;
@@ -114,7 +113,12 @@ static const luaL_Reg Timers[] = {
 	{NULL,NULL}
 };
 
-int luaopen_Timer(lua_State *l) {
-	luaL_register(l, "Timer", Timers);
+int luaregister_Timers (lua_State * l) {
+	luaL_newlib(l, Timers);
 	return 1;
 }
+int luaopen_Timer(lua_State *l) {
+	luaL_requiref(l, "Timer", luaregister_Timers, 1);
+    return 1;
+}
+

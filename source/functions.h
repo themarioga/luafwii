@@ -38,15 +38,6 @@ DATATYPE* push##HANDLE(lua_State *l) { \
 	DATATYPE * newvalue = (DATATYPE*)lua_newuserdata(l, sizeof(DATATYPE)); \
 	return newvalue; \
 }
-/*
- * ** compatibility with Lua 5.2
- * */
-#if (LUA_VERSION_NUM == 502)
-#undef luaL_register
-#define luaL_register(L,n,f) \
-                { if ((n) == NULL) luaL_setfuncs(L,f,0); else luaL_newlib(L,f); }
-
-#endif
 
 SDL_Surface *screens;
 lua_State *l;

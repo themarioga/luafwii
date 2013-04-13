@@ -348,7 +348,13 @@ static const struct luaL_Reg Sound[] = {
   {"oggSetTime",lua_soundOggSetTime},
   {NULL, NULL}
 };
-int luaopen_Sound(lua_State *l) {
-	luaL_register(l, "Sound", Sound);
+
+int luaregister_Sound (lua_State * l) {
+	luaL_newlib(l, Sound);
 	return 1;
 }
+int luaopen_Sound(lua_State *l) {
+	luaL_requiref(l, "Sound", luaregister_Sound, 1);
+    return 1;
+}
+

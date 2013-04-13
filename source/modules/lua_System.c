@@ -58,11 +58,44 @@ static int lua_checkFile(lua_State *l) {
 	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
 	const char *path = luaL_checkstring(l, 1);
 	FILE *fichero = fopen(path, "r");
-	if(fichero){
-		lua_pushnumber(l, 1);
- 	}else{
-		lua_pushnumber(l, 0);
- 	}
+	if(fichero) lua_pushnumber(l, 1);
+ 	else lua_pushnumber(l, 0);
+ 	fclose(fichero);
+	return 1;
+}
+static int lua_createFile(lua_State *l) {
+	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
+	const char *path = luaL_checkstring(l, 1);
+	FILE *fichero = fopen(path, "w");
+ 	fclose(fichero);
+	return 1;
+}
+static int lua_readFile(lua_State *l) {
+	if (lua_gettop(l) != 1) return luaL_error(l, "wrong number of arguments");
+	const char *path = luaL_checkstring(l, 1);
+	long lSize;
+	char * buffer;
+	size_t result;
+	FILE *fichero = fopen(path, "r");
+	fseek (fichero , 0 , SEEK_END);
+	lSize = ftell (fichero);
+	rewind (fichero);
+	buffer = (char*) malloc (sizeof(char)*lSize);
+	result = fread (buffer,1,lSize,fichero);
+	lua_pushstring(l, buffer);
+ 	fclose(fichero);
+	free(buffer);
+	return 1;
+}
+static int lua_writeFile(lua_State *l) {
+	if (lua_gettop(l) != 3) return luaL_error(l, "wrong number of arguments");
+	const char *path = luaL_checkstring(l, 1);
+	const char *buffer = luaL_checkstring(l, 2);
+	int replace = luaL_checkint(l, 3);
+	FILE *fichero;
+	if (replace) fichero = fopen(path, "w");
+	else fichero = fopen(path, "a");
+	fputs(buffer, fichero);
  	fclose(fichero);
 	return 1;
 }
@@ -153,7 +186,10 @@ static const struct luaL_Reg System[] = {
 	{"currentDir",lua_curdir},
 	{"createDir",lua_createDir},
 	{"removeDir",lua_removeDir},
-	{"checkFile",lua_checkFile}, //Cambiado
+	{"checkFile",lua_checkFile},
+	{"createFile",lua_createFile},//New
+	{"readFile",lua_readFile},//New
+	{"writeFile",lua_writeFile},//New
 	{"removeFile",lua_removeFile},
 	{"renameFile",lua_renameFile},
 	{"moveFile",lua_moveFile},
@@ -161,7 +197,12 @@ static const struct luaL_Reg System[] = {
 	{NULL, NULL}
 };
 
-int luaopen_System(lua_State *l) {
-	luaL_register(l, "System", System);
+int luaregister_System (lua_State * l) {
+	luaL_newlib(l, System);
 	return 1;
 }
+int luaopen_System(lua_State *l) {
+	luaL_requiref(l, "System", luaregister_System, 1);
+    return 1;
+}
+
