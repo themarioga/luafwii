@@ -18,12 +18,6 @@ int main(int argc, char *argv[]) {
 	luaopen_Controls(l);
 	luaopen_Timer(l);
 	int s = luaL_loadfile(l, "script.lua");
-	SDL_Surface *image = IMG_Load("contest_splash.png");
-	if (image) {
-		apply_surface(0,0, image, screens, NULL);
-		SDL_Flip(screens);
-		SDL_Delay(5000);
-	}
 	while(1) {
 		if (s == 0) {
 			s = lua_pcall(l, 0, 0, 0);
